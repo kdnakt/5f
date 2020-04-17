@@ -10,7 +10,7 @@ public class RoomResource {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public String hello() {
-        return "hello";
+    public String room() {
+        return "Room 1";
     }
 }
