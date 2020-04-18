@@ -1,19 +1,32 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import {
-  Button,
+  Button, FormGroup, FormControl, Form,
 } from 'react-bootstrap';
+import axios from 'axios';
 
 const RoomSelect: React.FC = () => {
-  return (
+  const [selectedRoom, setSelectedRoom] = useState('');
+  const create = useCallback(() => {
+    axios.get('/room/new').then(res => {
+      setSelectedRoom(res.data);
+    });
+  }, []);
+  return (!!selectedRoom ?
     <>
-      <input
-        value=''
-      />
+      <div>Room ID: {selectedRoom}</div>
+    </>
+    :
+    <>
+      <Form>
+        <FormGroup>
+          <FormControl />
+        </FormGroup>
+      </Form>
       <Button variant='outline-primary'>
         Enter the Room
       </Button>
-      <br />
-      <Button variant='outline-primary'>
+      <hr />
+      <Button variant='outline-primary' onClick={create} >
         Create New Room
       </Button>
     </>
