@@ -45,6 +45,7 @@ const RoomSelect: React.FC = () => {
       >
         Create New Room
       </Button>
+      <div style={{clear: 'both'}}></div>
     </>
   );
 };
