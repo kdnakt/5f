@@ -3,9 +3,10 @@ package com.kdnakt.quarkus.fivefingers;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
+
+import org.apache.commons.lang3.RandomStringUtils;
 
 @ApplicationScoped
 public class RoomService {
@@ -16,7 +17,7 @@ public class RoomService {
     public String newRoomId() {
         String newRoomId;
         do {
-            newRoomId = UUID.randomUUID().toString();
+            newRoomId = RandomStringUtils.randomNumeric(6);
         } while (rooms.contains(newRoomId));
         rooms.add(newRoomId);
         return newRoomId;
