@@ -7,18 +7,14 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 @Path("/room")
 public class RoomResource {
 
     @Inject
     RoomService roomService;
-
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String room() {
-        return "Room 1";
-    }
 
     @GET
     @Path("/new")
@@ -29,10 +25,10 @@ public class RoomResource {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public String room(@QueryParam("id") String id) {
+    public Response room(@QueryParam("id") String id) {
         if (!roomService.exists(id)) {
-            throw new RuntimeException();
+            return Response.status(Status.BAD_REQUEST).build();
         }
-        return id;
+        return Response.ok(id).build();
     }
 }
