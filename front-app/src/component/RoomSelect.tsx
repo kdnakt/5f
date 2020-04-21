@@ -53,7 +53,7 @@ const RoomSelect: React.FC = () => {
           </FormControl.Feedback>
         </FormGroup>
         <Button variant='outline-primary'
-          onClick={enter} disabled={!roomIdInput}
+          onClick={enter} disabled={!roomIdInput || roomNotExists}
         >
           Enter the Room
         </Button>
