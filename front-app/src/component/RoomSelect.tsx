@@ -43,6 +43,7 @@ const RoomSelect: React.FC = () => {
             }}
             placeholder='123456'
             pattern='[0-9]{6}'
+            maxLength={6}
             isValid={!roomNotExists && !!roomIdInput}
             isInvalid={roomNotExists}
           />
