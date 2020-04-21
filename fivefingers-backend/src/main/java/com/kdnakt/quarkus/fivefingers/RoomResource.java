@@ -29,7 +29,9 @@ public class RoomResource {
     @Path("/room/{id}")
     @Produces(MediaType.TEXT_PLAIN)
     public String room(@PathParam("id") String id) {
-
+        if (!roomService.exists(id)) {
+            throw new RuntimeException();
+        }
         return id;
     }
 }

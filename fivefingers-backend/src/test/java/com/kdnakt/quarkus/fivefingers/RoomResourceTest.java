@@ -12,7 +12,7 @@ public class RoomResourceTest {
     @Test
     public void testHelloEndpoint() {
         given()
-          .when().get("/room")
+          .when().get("/newroom")
           .then()
              .statusCode(200)
              .body(is("hello"));
