@@ -32,7 +32,7 @@ const RoomSelect: React.FC = () => {
         </Button>
       </Form>
       <Button style={{
-          margin: '8px auto',
+          margin: '16px auto',
           width: '160px',
         }}
         variant='outline-primary' onClick={create}
