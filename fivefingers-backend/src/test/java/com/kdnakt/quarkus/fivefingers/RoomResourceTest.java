@@ -4,7 +4,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 
 @QuarkusTest
 public class RoomResourceTest {
@@ -12,10 +12,10 @@ public class RoomResourceTest {
     @Test
     public void testHelloEndpoint() {
         given()
-          .when().get("/newroom")
+          .when().get("/room/new")
           .then()
              .statusCode(200)
-             .body(is("hello"));
+             .body(notNullValue());
     }
 
 }
