@@ -27,4 +27,8 @@ public class RoomService {
         return newRoomId;
     }
 
+    public boolean exists(String roomId) {
+        return rooms.contains(roomId);
+    }
+
 }
