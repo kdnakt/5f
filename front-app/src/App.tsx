@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
-import RoomSelect from './component/RoomSelect';
 import Footer from './component/Footer';
+import RoomSelect from './component/RoomSelect';
 
 const App: React.FC = () => {
   return (

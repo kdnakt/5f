@@ -11,11 +11,9 @@ const RoomSelect: React.FC = () => {
       setSelectedRoom(res.data);
     });
   }, []);
-  return (!!selectedRoom ?
-    <>
-      <div>Room ID: {selectedRoom}</div>
-    </>
-    :
+
+  if (selectedRoom) return <div>Room ID: {selectedRoom}</div>;
+  return (
     <>
       <Form style={{
           width: '160px',
