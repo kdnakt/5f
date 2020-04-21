@@ -14,11 +14,13 @@ const RoomSelect: React.FC = () => {
 
   if (selectedRoom) return <div>Room ID: {selectedRoom}</div>;
   return (
-    <>
+    <div style={{
+      width: '80%',
+      margin: '0 auto',
+    }}>
       <Form style={{
           width: '160px',
-          margin: '16px 8px',
-          float: 'left'
+          margin: '16px auto',
         }}
       >
         <FormGroup>
@@ -29,22 +31,15 @@ const RoomSelect: React.FC = () => {
           Enter the Room
         </Button>
       </Form>
-      <div style={{
-          float: 'left',
-          margin: '56px 0'
-        }}
-      >or</div>
       <Button style={{
-          float: 'left',
-          margin: '48px 8px',
-          width: '160px'
+          margin: '8px auto',
+          width: '160px',
         }}
         variant='outline-primary' onClick={create}
       >
         Create New Room
       </Button>
-      <div style={{clear: 'both'}}></div>
-    </>
+    </div>
   );
 };
 
