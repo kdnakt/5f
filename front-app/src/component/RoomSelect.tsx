@@ -5,12 +5,10 @@ import {
 import axios from 'axios';
 
 function validateRoomId(roomIdInput: string) {
-  if (isNaN(parseInt(roomIdInput))) {
-    console.log('nan');
-    return 'nan';
+  if (isNaN(Number(roomIdInput))) {
+    return 'Only digits allowed.';
   } else if (roomIdInput.length < 6) {
-    console.log('short');
-    return 'short';
+    return '6 digits needed.';
   } else {
     return '';
   }
@@ -33,13 +31,16 @@ const RoomSelect: React.FC = () => {
       setRoomNotExists(true);
     });
   }, [roomIdInput]);
+  const [roomIdFeedback, setRoomIdFeedback] = useState('');
   const roomIdRef = createRef<HTMLInputElement>();
   useEffect(() => {
     if (roomIdRef.current) {
-      const result = validateRoomId(roomIdInput);
+      const result = roomNotExists ? `Room ${roomIdInput} doesn't exist.`
+        : validateRoomId(roomIdInput);
+      setRoomIdFeedback(result);
       roomIdRef.current!.setCustomValidity(result);
     }
-  });
+  }, [roomIdInput, roomIdRef, roomNotExists]);
   if (selectedRoom) return <div>Room ID: {selectedRoom}</div>;
   return (
     <div style={{
@@ -65,8 +66,7 @@ const RoomSelect: React.FC = () => {
             maxLength={6}
           />
           <FormControl.Feedback type='invalid'>
-            {roomNotExists ? `Room ${roomIdInput} doesn't exist.`
-              : '6 digits are allowed.'}
+            {roomIdFeedback}
           </FormControl.Feedback>
         </FormGroup>
         <Button variant='outline-primary'
