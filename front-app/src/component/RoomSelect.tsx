@@ -1,8 +1,20 @@
-import React, { useState, useCallback, FormEvent } from 'react';
+import React, { useState, useCallback, FormEvent, createRef, RefObject, useEffect } from 'react';
 import {
   Button, FormGroup, FormControl, Form, FormLabel,
 } from 'react-bootstrap';
 import axios from 'axios';
+
+function validateRoomId(roomIdInput: string) {
+  if (isNaN(parseInt(roomIdInput))) {
+    console.log('nan');
+    return 'nan';
+  } else if (roomIdInput.length < 6) {
+    console.log('short');
+    return 'short';
+  } else {
+    return '';
+  }
+}
 
 const RoomSelect: React.FC = () => {
   const [selectedRoom, setSelectedRoom] = useState('');
@@ -21,7 +33,13 @@ const RoomSelect: React.FC = () => {
       setRoomNotExists(true);
     });
   }, [roomIdInput]);
-
+  const roomIdRef = createRef<HTMLInputElement>();
+  useEffect(() => {
+    if (roomIdRef.current) {
+      const result = validateRoomId(roomIdInput);
+      roomIdRef.current!.setCustomValidity(result);
+    }
+  });
   if (selectedRoom) return <div>Room ID: {selectedRoom}</div>;
   return (
     <div style={{
@@ -37,6 +55,7 @@ const RoomSelect: React.FC = () => {
         <FormGroup>
           <FormLabel>Enter Room ID</FormLabel>
           <FormControl value={roomIdInput}
+            ref={roomIdRef as RefObject<any>}
             onChange={(e: FormEvent<HTMLInputElement>) => {
               setRoomIdInput(e.currentTarget.value);
               if (roomNotExists) setRoomNotExists(false);
@@ -44,8 +63,6 @@ const RoomSelect: React.FC = () => {
             placeholder='123456'
             pattern='[0-9]{6}'
             maxLength={6}
-            isValid={!roomNotExists && !!roomIdInput}
-            isInvalid={roomNotExists}
           />
           <FormControl.Feedback type='invalid'>
             {roomNotExists ? `Room ${roomIdInput} doesn't exist.`
