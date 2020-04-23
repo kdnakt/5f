@@ -8,7 +8,7 @@ const Room: React.FC<{roomId: string}> = ({
     <>
       <div>Room ID: {roomId}</div>
       <div>
-        <FingerSelect />
+        <FingerSelect roomId={roomId} />
       </div>
     </>
   );

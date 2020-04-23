@@ -1,6 +1,18 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import axios from 'axios';
 
-const FingerSelect: React.FC = () => {
+const FingerSelect: React.FC<{roomId: string}> = ({
+  roomId,
+}) => {
+  const postFingers = useCallback((
+    count: number
+  ) => {
+    axios.post(`/room/${roomId}/fingers`, {
+      count: count,
+    }).then(res => {
+      alert(res.data)
+    });
+  }, []);
   return (
     <>
       <div>Select Your Status!</div>
@@ -16,7 +28,7 @@ const FingerSelect: React.FC = () => {
             border: '1px solid red',
             margin: '4px'
           }}
-          onClick={() => alert(o.count)}
+          onClick={() => postFingers(o.count)}
         >
           {o.text}
         </span>
