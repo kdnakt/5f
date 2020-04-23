@@ -3,6 +3,7 @@ import {
   Button, FormGroup, FormControl, Form, FormLabel,
 } from 'react-bootstrap';
 import axios from 'axios';
+import Room from './Room';
 
 function validateRoomId(roomIdInput: string) {
   if (isNaN(Number(roomIdInput))) {
@@ -41,7 +42,7 @@ const RoomSelect: React.FC = () => {
       roomIdRef.current!.setCustomValidity(result);
     }
   }, [roomIdInput, roomIdRef, roomNotExists]);
-  if (selectedRoom) return <div>Room ID: {selectedRoom}</div>;
+  if (selectedRoom) return <Room roomId={selectedRoom} />
   return (
     <div style={{
       width: '80%',
