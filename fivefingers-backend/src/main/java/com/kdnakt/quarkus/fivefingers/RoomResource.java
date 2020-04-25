@@ -12,8 +12,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import io.vertx.core.metrics.Measured;
-
 @Path("/room")
 public class RoomResource {
 
@@ -41,7 +39,7 @@ public class RoomResource {
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.APPLICATION_JSON)
     public String send(@PathParam("id") String id, Fingers fingers) {
-        return id + "hoge" + fingers.count;
+        return "You Selected: "  + fingers.count;
     }
 
 }
