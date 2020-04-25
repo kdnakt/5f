@@ -9,8 +9,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import org.apache.commons.lang3.RandomStringUtils;
 
 @Path("/room")
 public class RoomResource {
@@ -21,8 +24,11 @@ public class RoomResource {
     @GET
     @Path("/new")
     @Produces(MediaType.TEXT_PLAIN)
-    public String newRoom() {
-        return roomService.newRoomId();
+    public Response newRoom() {
+        String sessionId = RandomStringUtils.randomAlphanumeric(16);
+        return Response.ok(roomService.newRoomId(sessionId))
+                .cookie(NewCookie.valueOf("sessionId=" + sessionId))
+                .build();
     }
 
     @GET
