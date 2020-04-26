@@ -2,6 +2,7 @@ package com.kdnakt.quarkus.fivefingers;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -50,7 +51,9 @@ public class RoomResource {
     @Path("/{id}/fingers")
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.APPLICATION_JSON)
-    public String send(@PathParam("id") String id, Fingers fingers) {
+    public String send(@PathParam("id") String id, Fingers fingers,
+            @CookieParam("sessionId") String sessionId) {
+        System.out.println("Request from session: " + sessionId);
         return "You Selected: "  + fingers.count;
     }
 
