@@ -44,7 +44,10 @@ public class RoomResource {
         if (!roomService.exists(id)) {
             return Response.status(Status.BAD_REQUEST).build();
         }
-        return Response.ok(id).build();
+        String sessionId = RandomStringUtils.randomAlphanumeric(16);
+        return Response.ok(id)
+                .cookie(new NewCookie("sessionId", sessionId, "/", host, null, sessionMaxAge, false))
+                .build();
     }
 
     @POST
