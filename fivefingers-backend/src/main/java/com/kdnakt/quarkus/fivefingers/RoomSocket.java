@@ -12,9 +12,13 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
+import org.jboss.logging.Logger;
+
 @ServerEndpoint("/rooms/{roomId}/{sessionId}")
 @ApplicationScoped
 public class RoomSocket {
+
+    private static final Logger LOGGER = Logger.getLogger("RoomService");
 
     Map<String, Map<String, Session>> sessions = new ConcurrentHashMap<>();
 
@@ -22,8 +26,9 @@ public class RoomSocket {
     public void onOpen(Session session,
             @PathParam("roomId") String roomId,
             @PathParam("sessionId") String sessionId) {
-        sessions.putIfAbsent(roomId, new ConcurrentHashMap<>())
-                .put(sessionId, session);
+        sessions.putIfAbsent(roomId, new ConcurrentHashMap<>());
+        // putIfAbsent().putIfAbsent threw NullPointerException
+        sessions.get(roomId).putIfAbsent(sessionId, session);
         broadcast(roomId, sessionId, "joined");
     }
 
@@ -40,6 +45,8 @@ public class RoomSocket {
             @PathParam("roomId") String roomId,
             @PathParam("sessionId") String sessionId,
             Throwable throwable) {
+        LOGGER.error(throwable);
+        throwable.printStackTrace();
         sessions.get(roomId).remove(sessionId);
         broadcast(roomId, sessionId, "error: " + throwable);
     }
@@ -53,11 +60,12 @@ public class RoomSocket {
 
     private void broadcast(String roomId, String sessionId,
             String message) {
+        LOGGER.info("Room ID: " + roomId + ", Session ID: " + sessionId + ", Message: " + message);
         sessions.get(roomId).entrySet().forEach(e -> {
             if (sessionId.equals(e.getKey())) return;
             e.getValue().getAsyncRemote().sendObject(message, result -> {
                 if (result.getException() != null) {
-                    System.out.println("Unable to send message: " + result.getException());
+                    LOGGER.error("Unable to send message", result.getException());
                 }
             });
         });
