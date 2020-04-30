@@ -15,8 +15,6 @@ import javax.websocket.server.ServerEndpoint;
 
 import org.jboss.logging.Logger;
 
-import io.vertx.core.json.Json;
-
 @ServerEndpoint("/rooms/{roomId}/{sessionId}")
 @ApplicationScoped
 public class RoomSocket {
@@ -35,7 +33,7 @@ public class RoomSocket {
         sessions.putIfAbsent(roomId, new ConcurrentHashMap<>());
         // putIfAbsent().putIfAbsent threw NullPointerException
         sessions.get(roomId).put(sessionId, session);
-        broadcast(roomId, sessionId, Json.encode(service.get(roomId).fingers));
+        broadcast(roomId, sessionId, service.get(roomId).getFingers());
     }
 
     @OnClose
@@ -45,7 +43,7 @@ public class RoomSocket {
         sessions.get(roomId).remove(sessionId);
         Room room = service.get(roomId);
         room.removeSession(sessionId);
-        broadcast(roomId, sessionId, Json.encode(room.fingers));
+        broadcast(roomId, sessionId, room.getFingers());
     }
 
     @OnError
@@ -63,9 +61,9 @@ public class RoomSocket {
     public void onMessage(int count,
             @PathParam("roomId") String roomId,
             @PathParam("sessionId") String sessionId) {
-        Map<String, Integer> fingers =  service.get(roomId).fingers;
-        fingers.put(sessionId, Integer.valueOf(count));
-        broadcast(roomId, sessionId, Json.encode(fingers));
+        Room room =  service.get(roomId);
+        room.update(sessionId, count);
+        broadcast(roomId, sessionId, room.getFingers());
     }
 
     private void broadcast(String roomId, String sessionId,

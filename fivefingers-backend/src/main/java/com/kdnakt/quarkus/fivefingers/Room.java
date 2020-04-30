@@ -2,6 +2,9 @@ package com.kdnakt.quarkus.fivefingers;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+
+import io.vertx.core.json.Json;
 
 public class Room {
 
@@ -16,4 +19,22 @@ public class Room {
         this.fingers.remove(sessionId);
     }
 
+    public String getFingers() {
+        return Json.encode(this.fingers.entrySet().stream()
+                .map(e -> new Finger(e.getKey(), e.getValue()))
+                .collect(Collectors.toList()));
+    }
+
+    public void update(String sessionId, int count) {
+        this.fingers.put(sessionId, Integer.valueOf(count));
+    }
+
+    public static class Finger {
+        public String sid;
+        public int cnt;
+        public Finger(String sessionId, int count) {
+            this.sid = sessionId;
+            this.cnt = count;
+        }
+    }
 }

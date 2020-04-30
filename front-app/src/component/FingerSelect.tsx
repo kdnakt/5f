@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
+type Finger = {
+  sid: string;
+  cnt: number;
+};
+
 const FingerSelect: React.FC<{roomId: string}> = ({
   roomId,
 }) => {
@@ -9,16 +14,18 @@ const FingerSelect: React.FC<{roomId: string}> = ({
       sessionId = c.split('=')[1].trim();
     }
   });
+  const [fingers, setFingers] = useState<Array<Finger>>();
   const [socket, setSocket] = useState<WebSocket>();
   useEffect(() => {
     if (!roomId || !sessionId) return;
     const ws = new WebSocket(`ws://localhost:8080/rooms/${roomId}/${sessionId}`);
     setSocket(ws);
     ws.onopen = () => {
-      console.log('connected');
+      ws.send('0');
     };
     ws.onmessage = (e) => {
-      alert(`msg: ${e.data}`);
+      const data = JSON.parse(e.data) as Array<Finger>;
+      setFingers(data);
     };
     ws.onclose = () => {
       ws.close();
@@ -26,7 +33,7 @@ const FingerSelect: React.FC<{roomId: string}> = ({
     return () => {
       ws.close();
     };
-  }, [roomId, sessionId, setSocket]);
+  }, [roomId, sessionId, setSocket, setFingers]);
   return (
     <>
       <div>Select Your Status!</div>
@@ -49,6 +56,17 @@ const FingerSelect: React.FC<{roomId: string}> = ({
           {o.text}
         </span>
       ))}
+      <hr />
+      {fingers?.map((f, i) => {
+        const name = sessionId === f.sid ? 'Your Choice' : `User ${++i}`;
+        const count = f.cnt === 0 ? 'Not Selected' : f.cnt;
+        return (
+          <div key={f.sid}>
+            <span>{`${name}: ${count}`}</span>
+            <br />
+          </div>
+        );
+      })}
     </>
   );
 };
