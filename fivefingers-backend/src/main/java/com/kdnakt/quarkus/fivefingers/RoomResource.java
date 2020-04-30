@@ -36,12 +36,12 @@ public class RoomResource {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public Response room(@QueryParam("id") String id) {
-        if (!roomService.exists(id)) {
+    public Response room(@QueryParam("id") String roomId) {
+        String sessionId = RandomStringUtils.randomAlphanumeric(16);
+        if (!roomService.exists(roomId, sessionId)) {
             return Response.status(Status.BAD_REQUEST).build();
         }
-        String sessionId = RandomStringUtils.randomAlphanumeric(16);
-        return Response.ok(id)
+        return Response.ok(roomId)
                 .cookie(new NewCookie("sessionId", sessionId, "/", host, null, sessionMaxAge, false))
                 .build();
     }

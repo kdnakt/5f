@@ -21,16 +21,25 @@ public class RoomService {
         String newRoomId;
         do {
             newRoomId = RandomStringUtils.randomNumeric(6);
-        } while (exists(newRoomId));
+        } while (rooms.containsKey(newRoomId));
         Room newRoom = new Room();
         newRoom.roomId = newRoomId;
+        newRoom.addSession(sessionId);
         rooms.put(newRoomId, newRoom);
         LOGGER.info("New Room ID: " + newRoomId);
         return newRoomId;
     }
 
-    public boolean exists(String roomId) {
-        return rooms.containsKey(roomId);
+    public boolean exists(String roomId, String sessionId) {
+        boolean exists = rooms.containsKey(roomId);
+        if (exists) {
+            rooms.get(roomId).addSession(sessionId);
+        }
+        return exists;
+    }
+
+    public Room get(String roomId) {
+        return rooms.get(roomId);
     }
 
 }
