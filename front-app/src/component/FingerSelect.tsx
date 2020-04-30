@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 
 const FingerSelect: React.FC<{roomId: string}> = ({
@@ -19,11 +19,13 @@ const FingerSelect: React.FC<{roomId: string}> = ({
       sessionId = c.split('=')[1].trim();
     }
   });
+  const [socket, setSocket] = useState<WebSocket>();
   useEffect(() => {
     if (!roomId || !sessionId) return;
     const ws = new WebSocket(`ws://localhost:8080/rooms/${roomId}/${sessionId}`);
+    setSocket(ws);
     ws.onopen = () => {
-      alert('connected');
+      console.log('connected');
     };
     ws.onmessage = (e) => {
       alert(`msg: ${e.data}`);
@@ -34,7 +36,7 @@ const FingerSelect: React.FC<{roomId: string}> = ({
     return () => {
       ws.close();
     };
-  }, [roomId, sessionId]);
+  }, [roomId, sessionId, setSocket]);
   return (
     <>
       <div>Select Your Status!</div>
@@ -50,7 +52,9 @@ const FingerSelect: React.FC<{roomId: string}> = ({
             border: '1px solid red',
             margin: '4px'
           }}
-          onClick={() => postFingers(o.count)}
+          onClick={() => {
+            socket?.send(`${o.count}`)
+          }}
         >
           {o.text}
         </span>
