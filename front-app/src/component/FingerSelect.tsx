@@ -4,15 +4,6 @@ import axios from 'axios';
 const FingerSelect: React.FC<{roomId: string}> = ({
   roomId,
 }) => {
-  const postFingers = useCallback((
-    count: number
-  ) => {
-    axios.post(`/room/${roomId}/fingers`, {
-      count: count,
-    }).then(res => {
-      alert(res.data)
-    });
-  }, [roomId]);
   let sessionId = '';
   document.cookie.split('; ').forEach(c => {
     if (c.indexOf('sessionId=') === 0) {// startsWith
