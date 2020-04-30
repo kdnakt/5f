@@ -14,7 +14,9 @@ import javax.websocket.server.ServerEndpoint;
 
 import org.jboss.logging.Logger;
 
-@ServerEndpoint("/rooms/{roomId}/{sessionId}")
+@ServerEndpoint(
+    value = "/rooms/{roomId}/{sessionId}",
+    encoders = Fingers.FingersEncoder.class)
 @ApplicationScoped
 public class RoomSocket {
 
@@ -52,15 +54,15 @@ public class RoomSocket {
     }
 
     @OnMessage
-    public void onMessage(String message,
+    public void onMessage(int count,
             @PathParam("roomId") String roomId,
             @PathParam("sessionId") String sessionId) {
-        broadcast(roomId, sessionId, message);
+        broadcast(roomId, sessionId, new Fingers(sessionId, count));
     }
 
     private void broadcast(String roomId, String sessionId,
-            String message) {
-        LOGGER.info("Room ID: " + roomId + ", Session ID: " + sessionId + ", Message: " + message);
+            Object message) {
+        LOGGER.info("Room ID: " + roomId + ", Session ID: " + sessionId + ", Object: " + message);
         sessions.get(roomId).entrySet().forEach(e -> {
             if (sessionId.equals(e.getKey())) return;
             e.getValue().getAsyncRemote().sendObject(message, result -> {
