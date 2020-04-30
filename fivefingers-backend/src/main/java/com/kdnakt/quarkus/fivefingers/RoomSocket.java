@@ -20,7 +20,7 @@ import org.jboss.logging.Logger;
 @ApplicationScoped
 public class RoomSocket {
 
-    private static final Logger LOGGER = Logger.getLogger("RoomService");
+    private static final Logger LOGGER = Logger.getLogger("RoomSocket");
 
     Map<String, Map<String, Session>> sessions = new ConcurrentHashMap<>();
 
