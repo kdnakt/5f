@@ -72,7 +72,6 @@ public class RoomSocket {
             Object message) {
         LOGGER.info("Room ID: " + roomId + ", Session ID: " + sessionId + ", Object: " + message);
         sessions.get(roomId).entrySet().forEach(e -> {
-            if (sessionId.equals(e.getKey())) return;
             e.getValue().getAsyncRemote().sendObject(message, result -> {
                 if (result.getException() != null) {
                     LOGGER.error("Unable to send message", result.getException());
