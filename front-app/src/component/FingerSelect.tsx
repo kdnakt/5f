@@ -51,7 +51,8 @@ const FingerSelect: React.FC<{roomId: string}> = ({
             socket?.send(`${o.count}`)
           }}
           style={{
-            margin: '8px'
+            margin: '16px',
+            width: '104px'
           }}
         >
           {o.text}
