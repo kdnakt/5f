@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Button } from 'react-bootstrap';
 
 type Finger = {
   sid: string;
@@ -44,17 +45,17 @@ const FingerSelect: React.FC<{roomId: string}> = ({
           { count: 4, text: 'good'},
           { count: 5, text: 'very good'}
        ].map(o => (
-        <span key={o.count}
-          style={{
-            border: '1px solid red',
-            margin: '4px'
-          }}
+        <Button key={o.count}
+          variant='info'
           onClick={() => {
             socket?.send(`${o.count}`)
           }}
+          style={{
+            margin: '8px'
+          }}
         >
           {o.text}
-        </span>
+        </Button>
       ))}
       <hr />
       {fingers?.map((f, i) => {
