@@ -6,6 +6,14 @@ type Finger = {
   cnt: number;
 };
 
+const FingerDefs = [
+  { count: 1, text: 'too bad (1)'},
+  { count: 2, text: 'bad (2)'},
+  { count: 3, text: 'normal (3)'},
+  { count: 4, text: 'good (4)'},
+  { count: 5, text: 'very good (5)'}
+];
+
 const FingerSelect: React.FC<{roomId: string}> = ({
   roomId,
 }) => {
@@ -38,13 +46,7 @@ const FingerSelect: React.FC<{roomId: string}> = ({
   return (
     <>
       <div>Select Your Status!</div>
-      {[
-          { count: 1, text: 'too bad'},
-          { count: 2, text: 'bad'},
-          { count: 3, text: 'normal'},
-          { count: 4, text: 'good'},
-          { count: 5, text: 'very good'}
-       ].map(o => (
+      {FingerDefs.map(o => (
         <Button key={o.count}
           variant='info'
           onClick={() => {
@@ -52,7 +54,7 @@ const FingerSelect: React.FC<{roomId: string}> = ({
           }}
           style={{
             margin: '16px',
-            width: '104px'
+            width: '128px'
           }}
         >
           {o.text}
@@ -61,7 +63,7 @@ const FingerSelect: React.FC<{roomId: string}> = ({
       <hr />
       {fingers?.map((f, i) => {
         const name = sessionId === f.sid ? 'Your Choice' : `User ${++i}`;
-        const count = f.cnt === 0 ? 'Not Selected' : f.cnt;
+        const count = f.cnt === 0 ? 'Not Selected' : FingerDefs.filter(def => def.count === f.cnt)[0].text;
         return (
           <div key={f.sid}>
             <span>{`${name}: ${count}`}</span>
