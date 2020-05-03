@@ -23,6 +23,7 @@ const FingerSelect: React.FC<{roomId: string}> = ({
       sessionId = c.split('=')[1].trim();
     }
   });
+  const [count, setCount] = useState(0);
   const [fingers, setFingers] = useState<Array<Finger>>();
   const [socket, setSocket] = useState<WebSocket>();
   useEffect(() => {
@@ -45,12 +46,13 @@ const FingerSelect: React.FC<{roomId: string}> = ({
   }, [roomId, sessionId, setSocket, setFingers]);
   return (
     <>
-      <div>Select Your Status!</div>
-      {FingerDefs.map(o => (
+      {!count ? <div>Select Your Status!</div> : undefined}
+      {!count ? FingerDefs.map(o => (
         <Button key={o.count}
           variant='info'
           onClick={() => {
-            socket?.send(`${o.count}`)
+            socket?.send(`${o.count}`);
+            setCount(o.count);
           }}
           style={{
             margin: '16px',
@@ -59,7 +61,17 @@ const FingerSelect: React.FC<{roomId: string}> = ({
         >
           {o.text}
         </Button>
-      ))}
+      )) : (
+        <>
+          <div>Your Choice: {count}</div>
+          <Button variant='warning'
+            onClick={() => {
+              socket?.send('0');
+              setCount(0);
+            }}
+          >Reset</Button>
+        </>
+      )}
       <hr />
       {fingers?.map((f, i) => {
         const name = sessionId === f.sid ? 'Your Choice' : `User ${++i}`;
