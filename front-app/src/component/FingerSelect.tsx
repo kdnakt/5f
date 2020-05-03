@@ -64,7 +64,7 @@ const FingerSelect: React.FC<{roomId: string}> = ({
         </Button>
       )) : (
         <>
-          <div>Your Choice: {myCount}</div>
+          <div>Your Choice: {FingerDefs.filter(def => def.count === myCount)[0].text}</div>
           <Button variant='warning'
             size='sm'
             onClick={() => {
