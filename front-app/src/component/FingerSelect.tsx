@@ -23,7 +23,7 @@ const FingerSelect: React.FC<{roomId: string}> = ({
       sessionId = c.split('=')[1].trim();
     }
   });
-  const [count, setCount] = useState(0);
+  const [myCount, setMyCount] = useState(0);
   const [fingers, setFingers] = useState<Array<Finger>>();
   const [socket, setSocket] = useState<WebSocket>();
   useEffect(() => {
@@ -44,15 +44,16 @@ const FingerSelect: React.FC<{roomId: string}> = ({
       ws.close();
     };
   }, [roomId, sessionId, setSocket, setFingers]);
+  const notPostedCount = fingers?.filter(f => f.cnt === 0).length;
   return (
     <>
-      {!count ? <div>Select Your Status!</div> : undefined}
-      {!count ? FingerDefs.map(o => (
+      {!myCount ? <div>Select Your Status!</div> : undefined}
+      {!myCount ? FingerDefs.map(o => (
         <Button key={o.count}
           variant='info'
           onClick={() => {
             socket?.send(`${o.count}`);
-            setCount(o.count);
+            setMyCount(o.count);
           }}
           style={{
             margin: '16px',
@@ -63,18 +64,18 @@ const FingerSelect: React.FC<{roomId: string}> = ({
         </Button>
       )) : (
         <>
-          <div>Your Choice: {count}</div>
+          <div>Your Choice: {myCount}</div>
           <Button variant='warning'
             size='sm'
             onClick={() => {
               socket?.send('0');
-              setCount(0);
+              setMyCount(0);
             }}
           >Reset</Button>
         </>
       )}
       <hr />
-      {fingers?.map((f, i) => {
+      {notPostedCount === 0 ? fingers?.map((f, i) => {
         const name = sessionId === f.sid ? 'Your Choice' : `User ${++i}`;
         const count = f.cnt === 0 ? 'Not Selected' : FingerDefs.filter(def => def.count === f.cnt)[0].text;
         return (
@@ -83,7 +84,16 @@ const FingerSelect: React.FC<{roomId: string}> = ({
             <br />
           </div>
         );
-      })}
+      }) : (
+        <>
+          <div>Waiting for everyone to choose ...</div>
+          {(notPostedCount === 1 && myCount === 0) ? (
+            <div>You are the last one to choose!</div>
+          ) : (
+            <div>{notPostedCount} person{notPostedCount === 1 ? '' : 's'} left.</div>
+          )}
+        </>
+      )}
     </>
   );
 };
