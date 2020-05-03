@@ -65,6 +65,7 @@ const FingerSelect: React.FC<{roomId: string}> = ({
         <>
           <div>Your Choice: {count}</div>
           <Button variant='warning'
+            size='sm'
             onClick={() => {
               socket?.send('0');
               setCount(0);
