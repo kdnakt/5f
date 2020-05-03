@@ -6,6 +6,7 @@ const Room: React.FC<{roomId: string}> = ({
 }) => {
   return (
     <>
+      <hr />
       <div>Room ID: {roomId}</div>
       <div>
         <FingerSelect roomId={roomId} />
