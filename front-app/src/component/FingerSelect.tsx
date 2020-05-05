@@ -54,7 +54,7 @@ const FingerSelect: React.FC<{roomId: string}> = ({
     };
   }, [roomId, sessionId, setSocket, setFingers]);
   const notPostedCount = fingers?.filter(f => f.cnt === 0).length;
-  return hasError ? (
+  return hasError || closed ? (
     <>
       <div>
         Sorry, something went wrong.
