@@ -10,7 +10,7 @@ const Footer: React.FC = () => {
       lineHeight: '60px',
       backgroundColor: '#f5f5f5'
     }}>
-      Copyright © 2020 <a href='https://twitter.com/kdnakt'>kdnakt</a>
+      ver{process.env.REACT_APP_VERSION} / Copyright © 2020 <a href='https://twitter.com/kdnakt'>kdnakt</a>
     </footer>
   )
 }
