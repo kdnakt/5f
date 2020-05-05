@@ -7,11 +7,11 @@ type Finger = {
 };
 
 const FingerDefs = [
-  { count: 1, text: 'too bad (1)'},
-  { count: 2, text: 'bad (2)'},
-  { count: 3, text: 'normal (3)'},
+  { count: 5, text: 'very good (5)'},
   { count: 4, text: 'good (4)'},
-  { count: 5, text: 'very good (5)'}
+  { count: 3, text: 'normal (3)'},
+  { count: 2, text: 'bad (2)'},
+  { count: 1, text: 'too bad (1)'},
 ];
 
 const FingerSelect: React.FC<{roomId: string}> = ({
