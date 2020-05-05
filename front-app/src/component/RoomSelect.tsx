@@ -57,6 +57,9 @@ const RoomSelect: React.FC = () => {
         <FormGroup>
           <FormLabel>Enter Room ID</FormLabel>
           <FormControl value={roomIdInput}
+            style={{
+              textAlign: 'center'
+            }}
             ref={roomIdRef as RefObject<any>}
             onChange={(e: FormEvent<HTMLInputElement>) => {
               setRoomIdInput(e.currentTarget.value);
