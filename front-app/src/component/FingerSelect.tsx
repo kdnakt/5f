@@ -25,27 +25,47 @@ const FingerSelect: React.FC<{roomId: string}> = ({
   });
   const [myCount, setMyCount] = useState(0);
   const [fingers, setFingers] = useState<Array<Finger>>();
+  const [connected, setConnected] = useState(false);
+  const [closed, setClosed] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const [socket, setSocket] = useState<WebSocket>();
   useEffect(() => {
     if (!roomId || !sessionId) return;
-    const ws = new WebSocket(`${process.env.REACT_APP_WS_URL}/rooms/${roomId}/${sessionId}`);
+    const ws = new WebSocket(`${process.env.REACT_APP_WS_URL}//rooms/${roomId}/${sessionId}`);
     setSocket(ws);
     ws.onopen = () => {
+      setConnected(true);
       ws.send('0');
     };
     ws.onmessage = (e) => {
       const data = JSON.parse(e.data) as Array<Finger>;
       setFingers(data);
     };
+    ws.onerror = (e) => {
+      console.log('error', e);
+      setHasError(true);
+    };
     ws.onclose = () => {
       ws.close();
+      setClosed(true);
     };
     return () => {
       ws.close();
     };
   }, [roomId, sessionId, setSocket, setFingers]);
   const notPostedCount = fingers?.filter(f => f.cnt === 0).length;
-  return (
+  return hasError ? (
+    <>
+      <div>
+        Sorry, something went wrong.
+      </div>
+      <Button variant='outline-primary'
+        onClick={() => document.location.reload()}
+      >
+        Back to Lobby
+      </Button>
+    </>
+  ) : connected ? (
     <>
       {!myCount ? <div>Select Your Status!</div> : undefined}
       {!myCount ? FingerDefs.map(o => (
@@ -94,6 +114,10 @@ const FingerSelect: React.FC<{roomId: string}> = ({
           )}
         </>
       )}
+    </>
+  ) : (
+    <>
+      <div>Connecting to server ...</div>
     </>
   );
 };
