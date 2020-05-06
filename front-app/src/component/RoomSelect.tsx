@@ -21,12 +21,12 @@ const RoomSelect: React.FC = () => {
   const [roomNotExists, setRoomNotExists] = useState(false);
 
   const create = useCallback(() => {
-    axios.get('/room/new').then(res => {
+    axios.get('/api/rooms/new').then(res => {
       setSelectedRoom(res.data);
     });
   }, []);
   const enter = useCallback(() => {
-    axios.get(`/room?id=${roomIdInput}`).then(res => {
+    axios.get(`/api/rooms?id=${roomIdInput}`).then(res => {
       setSelectedRoom(res.data);
     }).catch(_ => {
       setRoomNotExists(true);

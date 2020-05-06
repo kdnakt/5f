@@ -15,7 +15,7 @@ import javax.websocket.server.ServerEndpoint;
 
 import org.jboss.logging.Logger;
 
-@ServerEndpoint("/rooms/{roomId}/{sessionId}")
+@ServerEndpoint("/ws/rooms/{roomId}/{sessionId}")
 @ApplicationScoped
 public class RoomSocket {
 

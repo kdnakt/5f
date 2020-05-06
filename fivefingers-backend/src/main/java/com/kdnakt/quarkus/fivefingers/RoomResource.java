@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-@Path("/room")
+@Path("/api/rooms")
 public class RoomResource {
 
     @Inject
