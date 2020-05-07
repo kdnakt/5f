@@ -31,7 +31,8 @@ const FingerSelect: React.FC<{roomId: string}> = ({
   const [socket, setSocket] = useState<WebSocket>();
   useEffect(() => {
     if (!roomId || !sessionId) return;
-    const ws = new WebSocket(`${process.env.REACT_APP_WS_URL}/ws/rooms/${roomId}/${sessionId}`);
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const ws = new WebSocket(`${protocol}//${window.location.host}/ws/rooms/${roomId}/${sessionId}`);
     setSocket(ws);
     ws.onopen = () => {
       setConnected(true);
