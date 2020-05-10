@@ -3,7 +3,7 @@ service: apigw
 provider:
   name: aws
   stage: dev
-  runtime: python3.8
+  runtime: java8
   region: ap-northeast-1
 
 # you can add statements to the Lambda function's IAM Role here
@@ -40,30 +40,30 @@ package:
 functions:
   # API Handlers
   roomApi:
-    handler: handler.hello
+    handler: com.kdnakt.quarkus.fivefingers.RoomsApiHandler
     events:
       - http:
           path: api/rooms/
           method: get
   newRoomApi:
-    handler: handler.hello
+    handler: com.kdnakt.quarkus.fivefingers.NewRoomsApiHandler
     events:
       - http:
           path: api/rooms/new
           method: get
   # WebSocket Handlers
   roomSocketConnect:
-    handler: handler.hello
+    handler: com.kdnakt.quarkus.fivefingers.RoomSocketConnectHandler
     events:
       - websocket:
           routeKey: $connect
   roomSocketDisconnect:
-    handler: handler.hello
+    handler: com.kdnakt.quarkus.fivefingers.RoomSocketDisconnectHandler
     events:
       - websocket:
           routeKey: $disconnect
   roomSocketMessage:
-    handler: handler.hello
+    handler: com.kdnakt.quarkus.fivefingers.RoomSocketDefaultHandler
     events:
       - websocket:
           routeKey: $default
