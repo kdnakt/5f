@@ -34,6 +34,8 @@ provider:
 #  exclude:
 #    - exclude-me.py
 #    - exclude-me-dir/**
+package:
+  artifact: ../fivefingers-backend/target/fivefingers-backend-dev.jar
 
 functions:
   # API Handlers
