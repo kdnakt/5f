@@ -35,7 +35,7 @@ provider:
 #    - exclude-me.py
 #    - exclude-me-dir/**
 package:
-  artifact: ../fivefingers-backend/target/function.zip
+  artifact: target/function.zip
 
 functions:
   # API Handlers
