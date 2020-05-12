@@ -22,9 +22,14 @@ provider:
 #            - "Ref" : "ServerlessDeploymentBucket"
 #            - "/*"
 
+custom:
+  roomsTable: ${self:service.name}-rooms-${self:provider.stage}
+  connectionsIndex: ${self:service.name}-room-connections-index-${self:provider.stage}
+
 # you can define service wide environment variables here
-#  environment:
-#    variable1: value1
+environment:
+  ROOMS_TABLENAME: ${self:custom.roomsTable}
+  CONNECTIONS_INDEXNAME: ${self:custom.connectionsIndex}
 
 # you can add packaging information here
 #package:
@@ -114,7 +119,7 @@ resources:
     RoomsTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:service.name}-rooms-${self:provider.stage}
+        TableName: ${self:custom.roomsTable}
         AttributeDefinitions:
           - AttributeName: RoomId
             AttributeType: S
@@ -124,7 +129,7 @@ resources:
           - AttributeName: RoomId
             KeyType: HASH
         LocalSecondaryIndexes:
-          - IndexName: ${self:service.name}-room-connections-index-${self:provider.stage}
+          - IndexName: ${self:custom.connectionsIndex}
             KeySchema:
               - AttributeName: RoomId
                 KeyType: HASH
