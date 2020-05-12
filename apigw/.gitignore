@@ -20,3 +20,6 @@ var/
 .serverless
 
 target/
+.classpath
+.project
+.settings/
