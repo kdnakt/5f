@@ -1,4 +1,4 @@
-service: apigw
+service: 5f-apigw
 
 provider:
   name: aws
@@ -109,8 +109,25 @@ functions:
 #      variable2: value2
 
 # you can add CloudFormation resource templates here
-#resources:
-#  Resources:
+resources:
+  Resources:
+    ConnectionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service.name}-connections-${self:provider.stage}
+        AttributeDefinitions:
+          - AttributeName: RoomId
+            AttributeType: S
+          - AttributeName: ConnectionId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: RoomId
+            KeyType: HASH
+          - AttributeName: ConnectionId
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        SSESpecification:
+          SSEEnabled: True
 #    NewResource:
 #      Type: AWS::S3::Bucket
 #      Properties:
