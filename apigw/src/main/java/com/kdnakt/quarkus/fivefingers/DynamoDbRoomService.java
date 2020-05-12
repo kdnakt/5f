@@ -55,6 +55,7 @@ public class DynamoDbRoomService {
                 GetItemRequest.builder()
                         .tableName(roomsTableName)
                         .key(key)
+                        .projectionExpression("RoomId")
                         .build()
                 ).item());
     }
