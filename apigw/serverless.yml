@@ -111,10 +111,10 @@ functions:
 # you can add CloudFormation resource templates here
 resources:
   Resources:
-    ConnectionsTable:
+    RoomsTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:service.name}-connections-${self:provider.stage}
+        TableName: ${self:service.name}-rooms-${self:provider.stage}
         AttributeDefinitions:
           - AttributeName: RoomId
             AttributeType: S
@@ -123,8 +123,15 @@ resources:
         KeySchema:
           - AttributeName: RoomId
             KeyType: HASH
-          - AttributeName: ConnectionId
-            KeyType: RANGE
+        LocalSecondaryIndexes:
+          - IndexName: ${self:service.name}-room-connections-index-${self:provider.stage}
+            KeySchema:
+              - AttributeName: RoomId
+                KeyType: HASH
+              - AttributeName: ConnectionId
+                KeyType: RANGE
+            Projection:
+              - ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
         SSESpecification:
           SSEEnabled: True
