@@ -16,7 +16,7 @@ public class RoomApiHandler implements RequestHandler<Map<String, Object>, ApiGa
     private static final Logger LOG = Logger.getLogger(RoomApiHandler.class);
 
     @Inject
-    RoomService roomService;
+    DynamoDbRoomService roomService;
 
     @Override
     public ApiGatewayResponse handleRequest(Map<String, Object> input, Context context) {

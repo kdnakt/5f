@@ -1,40 +1,47 @@
 package com.kdnakt.quarkus.fivefingers;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
-import io.vertx.core.json.Json;
+import io.quarkus.runtime.annotations.RegisterForReflection;
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
+@RegisterForReflection
 public class Room {
 
-    public String roomId;
-    public Map<String, Integer> fingers = new ConcurrentHashMap<>();
+    private String roomId;
 
-    public void addSession(String sessionId) {
-        this.fingers.putIfAbsent(sessionId, Integer.valueOf(0));
+    public Room() {}
+
+    public String getRoomId() {
+        return roomId;
     }
 
-    public void removeSession(String sessionId) {
-        this.fingers.remove(sessionId);
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
     }
 
-    public String getFingers() {
-        return Json.encode(this.fingers.entrySet().stream()
-                .map(e -> new Finger(e.getKey(), e.getValue()))
-                .collect(Collectors.toList()));
-    }
-
-    public void update(String sessionId, int count) {
-        this.fingers.put(sessionId, Integer.valueOf(count));
-    }
-
-    public static class Finger {
-        public String sid;
-        public int cnt;
-        public Finger(String sessionId, int count) {
-            this.sid = sessionId;
-            this.cnt = count;
+    public static Room from(Map<String, AttributeValue> item) {
+        Room room = new Room();
+        if (item != null && !item.isEmpty()) {
+            room.setRoomId(item.get("RoomId").s());
         }
+        return room;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Room)) {
+            return false;
+        }
+
+        Room other = (Room) obj;
+
+        return Objects.equals(other.roomId, this.roomId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.roomId);
     }
 }
