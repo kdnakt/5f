@@ -13,7 +13,7 @@ import org.jboss.logging.Logger;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
-import software.amazon.awssdk.services.dynamodb.model.ScanRequest;
+import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 
 @ApplicationScoped
 public class DynamoDbRoomService {
@@ -60,9 +60,13 @@ public class DynamoDbRoomService {
                 ).item());
     }
 
-    ScanRequest scanRequest() {
-        return ScanRequest.builder()
-                .tableName(roomsTableName)
-                .build();
+    public void addConnection(String roomId, String connectionId) {
+        Map<String, AttributeValue> item = new HashMap<>();
+        item.put("RoomId", AttributeValue.builder().s(roomId).build());
+        item.put("ConnectionId", AttributeValue.builder().s(connectionId).build());
+        dynamo.putItem(PutItemRequest.builder()
+                .tableName(connectionsTableName)
+                .item(item)
+                .build());
     }
 }
