@@ -24,12 +24,12 @@ provider:
 
 custom:
   roomsTable: ${self:service.name}-rooms-${self:provider.stage}
-  connectionsIndex: ${self:service.name}-room-connections-index-${self:provider.stage}
+  connectionsTable: ${self:service.name}-connections-${self:provider.stage}
 
 # you can define service wide environment variables here
 environment:
   ROOMS_TABLENAME: ${self:custom.roomsTable}
-  CONNECTIONS_INDEXNAME: ${self:custom.connectionsIndex}
+  CONNECTIONS_TABLENAME: ${self:custom.connectionsTable}
 
 # you can add packaging information here
 #package:
@@ -123,20 +123,26 @@ resources:
         AttributeDefinitions:
           - AttributeName: RoomId
             AttributeType: S
+        KeySchema:
+          - AttributeName: RoomId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        SSESpecification:
+          SSEEnabled: True
+    ConnectionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.connectionsTable}
+        AttributeDefinitions:
+          - AttributeName: RoomId
+            AttributeType: S
           - AttributeName: ConnectionId
             AttributeType: S
         KeySchema:
           - AttributeName: RoomId
             KeyType: HASH
-        LocalSecondaryIndexes:
-          - IndexName: ${self:custom.connectionsIndex}
-            KeySchema:
-              - AttributeName: RoomId
-                KeyType: HASH
-              - AttributeName: ConnectionId
-                KeyType: RANGE
-            Projection:
-              - ProjectionType: ALL
+          - AttributeName: ConnectionId
+            KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
         SSESpecification:
           SSEEnabled: True
