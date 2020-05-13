@@ -5,6 +5,8 @@ provider:
   stage: dev
   runtime: java11
   region: ap-northeast-1
+  logs:
+    websocket: true
 
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
