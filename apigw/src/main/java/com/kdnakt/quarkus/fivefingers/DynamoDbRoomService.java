@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
@@ -23,29 +24,28 @@ public class DynamoDbRoomService {
     DynamoDbClient dynamo;
     @ConfigProperty(name = "5f.table.rooms")
     String roomsTableName;
-    @ConfigProperty(name = "5f.index.connections")
-    String connectionsIndexName;
+    @ConfigProperty(name = "5f.table.connections")
+    String connectionsTableName;
 
-    public String newRoomId(String sessionId) {
+    public String newRoomId() {
         String newRoomId = null;
-        // do {
-        //     newRoomId = RandomStringUtils.randomNumeric(6);
-        // } while (rooms.containsKey(newRoomId));
-        // Room newRoom = new Room();
-        // newRoom.roomId = newRoomId;
-        // newRoom.addSession(sessionId);
-        // rooms.put(newRoomId, newRoom);
-        // LOGGER.info("New Room ID: " + newRoomId);
+        do {
+            newRoomId = RandomStringUtils.randomNumeric(6);
+        } while (exists(newRoomId));
+        LOGGER.info("New Room ID: " + newRoomId);
         return newRoomId;
     }
 
-    public boolean exists(String roomId, String sessionId) {
-        // boolean exists = rooms.containsKey(roomId);
-        // if (exists) {
-        //     rooms.get(roomId).addSession(sessionId);
-        // }
-        // return exists;
-        return false;
+    boolean exists(String roomId) {
+        Map<String, AttributeValue> key = new HashMap<>();
+        key.put("RoomId", AttributeValue.builder().s(roomId).build());
+        return dynamo.getItem(
+                GetItemRequest.builder()
+                        .tableName(roomsTableName)
+                        .key(key)
+                        .projectionExpression("RoomId")
+                        .build()
+                ).hasItem();
     }
 
     public Room get(String roomId) {
