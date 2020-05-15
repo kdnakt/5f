@@ -8,9 +8,9 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 
 import org.jboss.logging.Logger;
 
-public class RoomApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, ApiGatewayResponse> {
+public class NewRoomsApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, ApiGatewayResponse> {
 
-    private static final Logger LOG = Logger.getLogger(RoomApiHandler.class);
+    private static final Logger LOG = Logger.getLogger(NewRoomsApiHandler.class);
 
     @Inject
     DynamoDbRoomService roomService;
