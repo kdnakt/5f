@@ -10,10 +10,14 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
+import software.amazon.awssdk.core.SdkBytes;
+import software.amazon.awssdk.services.apigatewaymanagementapi.ApiGatewayManagementApiClient;
+import software.amazon.awssdk.services.apigatewaymanagementapi.model.PostToConnectionRequest;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
+import software.amazon.awssdk.services.dynamodb.model.QueryRequest;
 
 @ApplicationScoped
 public class DynamoDbRoomService {
@@ -22,6 +26,8 @@ public class DynamoDbRoomService {
 
     @Inject
     DynamoDbClient dynamo;
+    @Inject
+    ApiGatewayManagementApiClient apigw;
     @ConfigProperty(name = "5f.table.rooms")
     String roomsTableName;
     @ConfigProperty(name = "5f.table.connections")
@@ -68,5 +74,22 @@ public class DynamoDbRoomService {
                 .tableName(connectionsTableName)
                 .item(item)
                 .build());
+    }
+
+    public void send(String roomId) {
+        Map<String, AttributeValue> values = new HashMap<>();
+        values.put("RoomId", AttributeValue.builder().s(roomId).build());
+        dynamo.query(QueryRequest.builder()
+                .tableName(connectionsTableName)
+                .keyConditionExpression("RoomId = :roomId")
+                .expressionAttributeValues(values)
+                .attributesToGet("ConnectionId")
+                .build()).items().stream().forEach(item -> {
+                    String connectionId = item.get("ConnectionId").s();
+                    apigw.postToConnection(PostToConnectionRequest.builder()
+                            .connectionId(connectionId)
+                            .data(SdkBytes.fromUtf8String("hoge"))
+                            .build());
+                });
     }
 }

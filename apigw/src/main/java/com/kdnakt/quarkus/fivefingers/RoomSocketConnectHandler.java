@@ -23,6 +23,7 @@ public class RoomSocketConnectHandler implements RequestHandler<APIGatewayV2Prox
         String roomId = input.getBody();
         String connectionId = input.getRequestContext().getConnectionId();
         roomService.addConnection(roomId, connectionId);
+        roomService.send(roomId);
         APIGatewayV2ProxyResponseEvent res = new APIGatewayV2ProxyResponseEvent();
         res.setStatusCode(200);
         return res;
