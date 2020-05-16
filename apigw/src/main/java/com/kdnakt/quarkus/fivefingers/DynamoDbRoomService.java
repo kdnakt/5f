@@ -1,7 +1,9 @@
 package com.kdnakt.quarkus.fivefingers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -10,6 +12,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
+import io.vertx.core.json.Json;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.services.apigatewaymanagementapi.ApiGatewayManagementApiClient;
 import software.amazon.awssdk.services.apigatewaymanagementapi.model.PostToConnectionRequest;
@@ -76,19 +79,34 @@ public class DynamoDbRoomService {
                 .build());
     }
 
+    public static class Finger {
+        public String sid;
+        public int cnt;
+        public Finger(String sid, String cnt) {
+            this.sid = sid;
+            this.cnt = Integer.parseInt(cnt);
+        }
+    }
+
     public void send(String roomId) {
         Map<String, AttributeValue> values = new HashMap<>();
         values.put("RoomId", AttributeValue.builder().s(roomId).build());
-        dynamo.query(QueryRequest.builder()
+        List<Map<String, AttributeValue>> items =
+                dynamo.query(QueryRequest.builder()
                 .tableName(connectionsTableName)
                 .keyConditionExpression("RoomId = :roomId")
                 .expressionAttributeValues(values)
-                .attributesToGet("ConnectionId")
-                .build()).items().stream().forEach(item -> {
+                .attributesToGet("ConnectionId", "FingerCount")
+                .build()).items();
+        String data = Json.encode(items.stream().map(item -> new Finger(
+                item.get("ConnectionId").s(),
+                item.get("FingerCount").n())
+                ).collect(Collectors.toList()));
+        items.stream().forEach(item -> {
                     String connectionId = item.get("ConnectionId").s();
                     apigw.postToConnection(PostToConnectionRequest.builder()
                             .connectionId(connectionId)
-                            .data(SdkBytes.fromUtf8String("hoge"))
+                            .data(SdkBytes.fromUtf8String(data))
                             .build());
                 });
     }
