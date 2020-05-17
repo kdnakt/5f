@@ -18,6 +18,7 @@ import software.amazon.awssdk.services.apigatewaymanagementapi.ApiGatewayManagem
 import software.amazon.awssdk.services.apigatewaymanagementapi.model.PostToConnectionRequest;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
+import software.amazon.awssdk.services.dynamodb.model.DeleteItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.QueryRequest;
@@ -76,6 +77,16 @@ public class DynamoDbRoomService {
         dynamo.putItem(PutItemRequest.builder()
                 .tableName(connectionsTableName)
                 .item(item)
+                .build());
+    }
+
+    public void removeConnection(String roomId, String connectionId) {
+        Map<String, AttributeValue> item = new HashMap<>();
+        item.put("RoomId", AttributeValue.builder().s(roomId).build());
+        item.put("ConnectionId", AttributeValue.builder().s(connectionId).build());
+        dynamo.deleteItem(DeleteItemRequest.builder()
+                .tableName(connectionsTableName)
+                .key(item)
                 .build());
     }
 
