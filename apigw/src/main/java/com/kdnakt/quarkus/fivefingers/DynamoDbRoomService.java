@@ -1,5 +1,6 @@
 package com.kdnakt.quarkus.fivefingers;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,12 +31,12 @@ public class DynamoDbRoomService {
 
     @Inject
     DynamoDbClient dynamo;
-    @Inject
-    ApiGatewayManagementApiClient apigw;
     @ConfigProperty(name = "5f.table.rooms")
     String roomsTableName;
     @ConfigProperty(name = "5f.table.connections")
     String connectionsTableName;
+    @ConfigProperty(name = "5f.endpoint.ws")
+    String wsEndpoint;
 
     public String newRoomId() {
         String newRoomId = null;
@@ -113,6 +114,9 @@ public class DynamoDbRoomService {
                 item.get("ConnectionId").s(),
                 item.get("FingerCount").n())
                 ).collect(Collectors.toList()));
+        ApiGatewayManagementApiClient apigw = ApiGatewayManagementApiClient.builder()
+                .endpointOverride(URI.create(wsEndpoint))
+                .build();
         items.stream().forEach(item -> {
                     String connectionId = item.get("ConnectionId").s();
                     apigw.postToConnection(PostToConnectionRequest.builder()
