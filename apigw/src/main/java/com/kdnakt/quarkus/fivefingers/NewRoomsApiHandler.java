@@ -1,6 +1,7 @@
 package com.kdnakt.quarkus.fivefingers;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
@@ -8,6 +9,7 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 
 import org.jboss.logging.Logger;
 
+@Named("newRoom")
 public class NewRoomsApiHandler implements RequestHandler<APIGatewayProxyRequestEvent, ApiGatewayResponse> {
 
     private static final Logger LOG = Logger.getLogger(NewRoomsApiHandler.class);

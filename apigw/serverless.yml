@@ -44,12 +44,16 @@ functions:
       - http:
           path: api/rooms/
           method: get
+    environment:
+      HANDLER_NAME: room
   newRoomApi:
     handler: com.kdnakt.quarkus.fivefingers.NewRoomsApiHandler
     events:
       - http:
           path: api/rooms/new
           method: get
+    environment:
+      HANDLER_NAME: newRoom
   # WebSocket Handlers
   roomSocketConnect:
     handler: com.kdnakt.quarkus.fivefingers.RoomSocketConnectHandler
