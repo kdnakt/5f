@@ -55,17 +55,17 @@ functions:
     handler: com.kdnakt.quarkus.fivefingers.RoomSocketConnectHandler
     events:
       - websocket:
-          routeKey: $connect
+          route: $connect
   roomSocketDisconnect:
     handler: com.kdnakt.quarkus.fivefingers.RoomSocketDisconnectHandler
     events:
       - websocket:
-          routeKey: $disconnect
+          route: $disconnect
   roomSocketMessage:
     handler: com.kdnakt.quarkus.fivefingers.RoomSocketDefaultHandler
     events:
       - websocket:
-          routeKey: $default
+          route: $default
   
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
