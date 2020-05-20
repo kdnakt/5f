@@ -1,4 +1,4 @@
-import { APIGatewayProxyHandler } from 'aws-lambda';
+import { APIGatewayProxyHandler, Context } from 'aws-lambda';
 import 'source-map-support/register';
 
 import { DynamoDB } from 'aws-sdk';
@@ -6,6 +6,7 @@ import { DynamoDB } from 'aws-sdk';
 const db = new DynamoDB.DocumentClient();
 const roomTable = process.env.ROOMS_TABLENAME;
 const connTable = process.env.CONNECTIONS_TABLENAME;
+const corsOrigin = process.env.CORS_ORIGIN;
 const NUMBERS = "0123456789";
 const ALPHANUMS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" + NUMBERS;
 const ALPHANUMS_LEN = ALPHANUMS.length;
@@ -60,10 +61,73 @@ const newRoomId = (sessionId: string) => {
   return id;
 }
 
+const addSession = (roomId: string, sessionId: string, _context: Context) => {
+  db.get({
+    TableName: roomTable,
+    Key: {
+      RoomId: roomId
+    },
+    ProjectionExpression: 'SessionIds, LastUpdated',
+  }).promise().then(data => {
+    if (!data.Item.SessionIds.includes(sessionId)) {
+      data.Item.SessionIds.push(sessionId);
+      db.put({
+        TableName: roomTable,
+        Item: {
+          RoomId: roomId,
+          SessionIds: data.Item.SessionIds,
+          LastUpdated: lastUpdated(),
+        }
+      }).promise();
+    } else {
+      const errMsg = 'session already exists';
+      console.log(errMsg);
+      _context.fail(errMsg);
+    }
+  }).catch(err => {
+    console.log('Error:', err);
+    _context.fail(err);
+  });
+}
+
 export const newRoom: APIGatewayProxyHandler = async (event, _context) => {
   console.log('event:', event);
+  const sessionId = randomSessionId();
   return {
     statusCode: 200,
-    body: newRoomId(randomSessionId()),
+    headers: {
+      'Set-Cookie': `sessionId=${sessionId};Max-Age=180`,
+      'Access-Control-Allow-Origin': corsOrigin
+    },
+    body: newRoomId(sessionId),
+  };
+}
+
+export const getRoom: APIGatewayProxyHandler = async (event, _context) => {
+  console.log('event:', event);
+  const roomId = event.queryStringParameters.id;
+  if (!roomId) {
+    console.log('id parameter is not specified');
+    return {
+      statusCode: 400,
+      body: 'Bad Request'
+    };
+  }
+  if (!exists(roomId)) {
+    console.log(`${roomId} doens't exist`);
+    return {
+      statusCode: 400,
+      body: `Bad Request`
+    }
+  }
+  const sessionId = randomSessionId();
+  addSession(roomId, sessionId, _context);
+  return {
+    statusCode: 200,
+    headers: {
+      'Set-Cookie': `sessionId=${sessionId};Max-Age=180`,
+      'Access-Control-Allow-Origin': corsOrigin
+    },
+    body: roomId,
   };
 }
