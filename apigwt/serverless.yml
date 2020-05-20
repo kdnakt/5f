@@ -37,12 +37,20 @@ custom:
   connectionsTable: ${self:service.name}-connections-${self:provider.stage}
 
 functions:
-  hello:
+  newRoom:
     handler: ApiHandler.newRoom
     events:
       - http:
           method: get
           path: api/rooms/new
+          cors:
+            origin: ${self:custom.corsOrigin}
+  getRoom:
+    handler: ApiHandler.getRoom
+    events:
+      - http:
+          method: get
+          path: api/rooms
           cors:
             origin: ${self:custom.corsOrigin}
 
