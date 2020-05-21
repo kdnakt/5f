@@ -32,9 +32,9 @@ const randomSessionId = () => {
   return res;
 }
 
-const exists = (id: string) => {
+const exists = async (id: string) => {
   let res = false;
-  db.get({
+  await db.get({
     TableName: roomTable,
     Key: {
       RoomId: id
@@ -44,10 +44,7 @@ const exists = (id: string) => {
 }
 
 const newRoomId = async (sessionId: string) => {
-  let id = "";
-  do {
-    id = randomRoomId();
-  } while (exists(id));
+  const id = randomRoomId();
   await db.put({
     TableName: roomTable,
     Item: {
@@ -55,14 +52,17 @@ const newRoomId = async (sessionId: string) => {
       SessionIds: [sessionId],
       LastUpdated: lastUpdated(),
     },
+    ConditionExpression: 'attribute_not_exists(SessionIds)',
   }).promise().then(() => {
     console.log('newRoomId:', id);
+  }).catch(e => {
+    console.log(e);
   });
   return id;
 }
 
-const addSession = (roomId: string, sessionId: string, _context: Context) => {
-  db.get({
+const addSession = async (roomId: string, sessionId: string, _context: Context) => {
+  await db.get({
     TableName: roomTable,
     Key: {
       RoomId: roomId
@@ -128,7 +128,7 @@ export const getRoom: APIGatewayProxyHandler = async (event, _context) => {
     }
   }
   const sessionId = randomSessionId();
-  addSession(roomId, sessionId, _context);
+  await addSession(roomId, sessionId, _context);
   return {
     statusCode: 200,
     headers: {
