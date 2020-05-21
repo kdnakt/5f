@@ -2,6 +2,7 @@ import { APIGatewayProxyHandler, Context } from 'aws-lambda';
 import 'source-map-support/register';
 
 import { DynamoDB } from 'aws-sdk';
+import { lastUpdated } from './util/lastUpdated';
 
 const db = new DynamoDB.DocumentClient();
 const roomTable = process.env.ROOMS_TABLENAME;
@@ -10,10 +11,6 @@ const corsOrigin = process.env.CORS_ORIGIN;
 const NUMBERS = "0123456789";
 const ALPHANUMS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" + NUMBERS;
 const ALPHANUMS_LEN = ALPHANUMS.length;
-
-const lastUpdated = () => {
-  return new Date().toLocaleString('ja', { timeZone: 'Asia/Tokyo' });
-}
 
 const randomRoomId = () => {
   let res = "";
