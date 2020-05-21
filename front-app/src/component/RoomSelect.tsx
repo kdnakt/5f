@@ -17,17 +17,20 @@ function validateRoomId(roomIdInput: string) {
 
 const RoomSelect: React.FC = () => {
   const [selectedRoom, setSelectedRoom] = useState('');
+  const [sessionId, setSessionId] = useState('');
   const [roomIdInput, setRoomIdInput] = useState('');
   const [roomNotExists, setRoomNotExists] = useState(false);
 
   const create = useCallback(() => {
-    axios.get('/api/rooms/new').then(res => {
-      setSelectedRoom(res.data);
+    axios.get('https://k92usz8wj7.execute-api.ap-northeast-1.amazonaws.com/dev/api/rooms/new').then(res => {
+      setSelectedRoom(res.data.roomId);
+      setSessionId(res.data.sessionId);
     });
   }, []);
   const enter = useCallback(() => {
-    axios.get(`/api/rooms?id=${roomIdInput}`).then(res => {
-      setSelectedRoom(res.data);
+    axios.get(`https://k92usz8wj7.execute-api.ap-northeast-1.amazonaws.com/dev/api/rooms?id=${roomIdInput}`).then(res => {
+      setSelectedRoom(res.data.roomId);
+      setSessionId(res.data.sessionId);
     }).catch(_ => {
       setRoomNotExists(true);
     });
@@ -42,7 +45,7 @@ const RoomSelect: React.FC = () => {
       roomIdRef.current!.setCustomValidity(result);
     }
   }, [roomIdInput, roomIdRef, roomNotExists]);
-  if (selectedRoom) return <Room roomId={selectedRoom} />
+  if (selectedRoom && sessionId) return <Room roomId={selectedRoom} sessionId={sessionId} />
   return (
     <div style={{
       width: '80%',

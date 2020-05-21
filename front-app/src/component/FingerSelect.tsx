@@ -14,29 +14,30 @@ const FingerDefs = [
   { count: 1, text: 'too bad (1)'},
 ];
 
-const FingerSelect: React.FC<{roomId: string}> = ({
+const FingerSelect: React.FC<{
+  roomId: string;
+  sessionId: string;
+}> = ({
   roomId,
+  sessionId,
 }) => {
-  let sessionId = '';
-  document.cookie.split('; ').forEach(c => {
-    if (c.indexOf('sessionId=') === 0) {// startsWith
-      sessionId = c.split('=')[1].trim();
-    }
-  });
   const [myCount, setMyCount] = useState(0);
-  const [fingers, setFingers] = useState<Array<Finger>>();
+  const [fingers, setFingers] = useState<Array<Finger>>([]);
   const [connected, setConnected] = useState(false);
   const [closed, setClosed] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [socket, setSocket] = useState<WebSocket>();
   useEffect(() => {
     if (!roomId || !sessionId) return;
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const ws = new WebSocket(`${protocol}//${window.location.host}/ws/rooms/${roomId}/${sessionId}`);
+    //const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const ws = new WebSocket(`wss://f5e0oqodya.execute-api.ap-northeast-1.amazonaws.com/dev`);
     setSocket(ws);
     ws.onopen = () => {
       setConnected(true);
-      ws.send('0');
+      ws.send(JSON.stringify({
+        sid: sessionId,
+        cnt: 0,
+      }));
     };
     ws.onmessage = (e) => {
       const data = JSON.parse(e.data) as Array<Finger>;
@@ -73,7 +74,10 @@ const FingerSelect: React.FC<{roomId: string}> = ({
         <Button key={o.count}
           variant='info'
           onClick={() => {
-            socket?.send(`${o.count}`);
+            socket?.send(JSON.stringify({
+              sid: sessionId,
+              cnt: o.count,
+            }));
             setMyCount(o.count);
           }}
           style={{
@@ -89,7 +93,10 @@ const FingerSelect: React.FC<{roomId: string}> = ({
           <Button variant='warning'
             size='sm'
             onClick={() => {
-              socket?.send('0');
+              socket?.send(JSON.stringify({
+                sid: sessionId,
+                cnt: 0,
+              }));
               setMyCount(0);
             }}
           >Reset</Button>
