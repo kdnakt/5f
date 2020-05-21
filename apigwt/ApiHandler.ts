@@ -97,10 +97,12 @@ export const newRoom: APIGatewayProxyHandler = async (event, _context) => {
   return {
     statusCode: 200,
     headers: {
-      'Set-Cookie': `sessionId=${sessionId};Max-Age=180`,
       'Access-Control-Allow-Origin': corsOrigin
     },
-    body: roomId,
+    body: JSON.stringify({
+      roomId: roomId,
+      sessionId: sessionId,
+    })
   };
 }
 
@@ -132,9 +134,11 @@ export const getRoom: APIGatewayProxyHandler = async (event, _context) => {
   return {
     statusCode: 200,
     headers: {
-      'Set-Cookie': `sessionId=${sessionId};Max-Age=180`,
       'Access-Control-Allow-Origin': corsOrigin
     },
-    body: roomId,
+    body: JSON.stringify({
+      roomId: roomId,
+      sessionId: sessionId,
+    })
   };
 }

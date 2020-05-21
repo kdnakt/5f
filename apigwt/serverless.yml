@@ -54,6 +54,21 @@ functions:
           path: api/rooms
           cors:
             origin: ${self:custom.corsOrigin}
+  onConnect:
+    handler: SocketHandler.onConnect
+    events:
+      - websocket:
+          route: $connect
+  onDisonnect:
+    handler: SocketHandler.onDisconnect
+    events:
+      - websocket:
+          route: $disconnect
+  onMessage:
+    handler: SocketHandler.onMessage
+    events:
+      - websocket:
+          route: $default
 
 resources:
   Resources:
