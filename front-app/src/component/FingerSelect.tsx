@@ -29,12 +29,12 @@ const FingerSelect: React.FC<{
   const [socket, setSocket] = useState<WebSocket>();
   useEffect(() => {
     if (!roomId || !sessionId) return;
-    //const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const ws = new WebSocket(`wss://f5e0oqodya.execute-api.ap-northeast-1.amazonaws.com/dev`);
+    const ws = new WebSocket(`${process.env.REACT_APP_WS_URL}`);
     setSocket(ws);
     ws.onopen = () => {
       setConnected(true);
       ws.send(JSON.stringify({
+        rid: roomId,
         sid: sessionId,
         cnt: 0,
       }));
@@ -75,6 +75,7 @@ const FingerSelect: React.FC<{
           variant='info'
           onClick={() => {
             socket?.send(JSON.stringify({
+              rid: roomId,
               sid: sessionId,
               cnt: o.count,
             }));
@@ -94,6 +95,7 @@ const FingerSelect: React.FC<{
             size='sm'
             onClick={() => {
               socket?.send(JSON.stringify({
+                rid: roomId,
                 sid: sessionId,
                 cnt: 0,
               }));
