@@ -43,12 +43,12 @@ const exists = (id: string) => {
   return res;
 }
 
-const newRoomId = (sessionId: string) => {
+const newRoomId = async (sessionId: string) => {
   let id = "";
   do {
     id = randomRoomId();
   } while (exists(id));
-  db.put({
+  await db.put({
     TableName: roomTable,
     Item: {
       RoomId: id,
@@ -93,13 +93,14 @@ const addSession = (roomId: string, sessionId: string, _context: Context) => {
 export const newRoom: APIGatewayProxyHandler = async (event, _context) => {
   console.log('event:', event);
   const sessionId = randomSessionId();
+  const roomId = await newRoomId(sessionId);
   return {
     statusCode: 200,
     headers: {
       'Set-Cookie': `sessionId=${sessionId};Max-Age=180`,
       'Access-Control-Allow-Origin': corsOrigin
     },
-    body: newRoomId(sessionId),
+    body: roomId,
   };
 }
 
@@ -110,6 +111,9 @@ export const getRoom: APIGatewayProxyHandler = async (event, _context) => {
     console.log('id parameter is not specified');
     return {
       statusCode: 400,
+      headers: {
+        'Access-Control-Allow-Origin': corsOrigin
+      },
       body: 'Bad Request'
     };
   }
@@ -117,6 +121,9 @@ export const getRoom: APIGatewayProxyHandler = async (event, _context) => {
     console.log(`${roomId} doens't exist`);
     return {
       statusCode: 400,
+      headers: {
+        'Access-Control-Allow-Origin': corsOrigin
+      },
       body: `Bad Request`
     }
   }
