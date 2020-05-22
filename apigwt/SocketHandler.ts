@@ -28,6 +28,7 @@ const connTable = process.env.CONNECTIONS_TABLENAME;
 const broadcast = async (roomId: string, context: APIGatewayEventRequestContextWithWebSocket) => {
   const connections = await db.query({
     TableName: connTable,
+    IndexName: 'roomid-index',
     KeyConditionExpression: 'RoomId = :rid',
     ExpressionAttributeValues: {
       ':rid': roomId
@@ -66,12 +67,19 @@ export const onConnect: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEventWithWebSocket
 ): Promise<Result> => {
   console.log('event:', event);
+  return new Result('OK');
+}
+
+export const onMessage: APIGatewayProxyHandler = async (
+  event: APIGatewayProxyEventWithWebSocket
+): Promise<Result> => {
+  console.log('event:', event);
   const req = JSON.parse(event.body);
   await db.put({
     TableName: connTable,
     Item: {
-      RoomId: req.rid,
       ConnectionId: event.requestContext.connectionId,
+      RoomId: req.rid,
       SessionId: req.sid,
       Count: req.cnt,
       LastUpdated: lastUpdated(),
@@ -85,12 +93,42 @@ export const onDisconnect: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEventWithWebSocket
 ): Promise<Result> => {
   console.log('event:', event);
-  return new Result('OK');
-}
-
-export const onMessage: APIGatewayProxyHandler = async (
-  event: APIGatewayProxyEventWithWebSocket
-): Promise<Result> => {
-  console.log('event:', event);
+  const conn = await db.get({
+    TableName: connTable,
+    Key: {
+      ConnectionId: event.requestContext.connectionId
+    }
+  }).promise();
+  const room = await db.get({
+    TableName: roomTable,
+    Key: {
+      RoomId: conn.Item.RoomId
+    }
+  }).promise();
+  const sessionIds = room.Item.SessionIds;
+  const newSessionIds = sessionIds.splice(sessionIds.indexOf(conn.Item.SessionId), 1);
+  if (newSessionIds.length == 0) {
+    await db.delete({
+      TableName: roomTable,
+      Key: {
+        RoomId: room.Item.RoomId
+      },
+    }).promise();
+  } else {
+    await db.put({
+      TableName: roomTable,
+      Item: {
+        RoomId: room.Item.RoomId,
+        SessionIds: newSessionIds,
+        LastUpdated: lastUpdated(),
+      }
+    }).promise();
+  }
+  await db.delete({
+    TableName: connTable,
+    Key: {
+      ConnectionId: event.requestContext.connectionId
+    },
+  }).promise();
   return new Result('OK');
 }
