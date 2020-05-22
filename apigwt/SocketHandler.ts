@@ -105,9 +105,16 @@ export const onDisconnect: APIGatewayProxyHandler = async (
       RoomId: conn.Item.RoomId
     }
   }).promise();
+  await db.delete({
+    TableName: connTable,
+    Key: {
+      ConnectionId: event.requestContext.connectionId
+    },
+  }).promise();
   const sessionIds = room.Item.SessionIds;
-  const newSessionIds = sessionIds.splice(sessionIds.indexOf(conn.Item.SessionId), 1);
-  if (newSessionIds.length == 0) {
+  console.log(conn.Item, sessionIds);
+  sessionIds.splice(sessionIds.indexOf(conn.Item.SessionId), 1);
+  if (sessionIds.length === 0) {
     await db.delete({
       TableName: roomTable,
       Key: {
@@ -119,16 +126,11 @@ export const onDisconnect: APIGatewayProxyHandler = async (
       TableName: roomTable,
       Item: {
         RoomId: room.Item.RoomId,
-        SessionIds: newSessionIds,
+        SessionIds: sessionIds,
         LastUpdated: lastUpdated(),
       }
     }).promise();
   }
-  await db.delete({
-    TableName: connTable,
-    Key: {
-      ConnectionId: event.requestContext.connectionId
-    },
-  }).promise();
+  await broadcast(room.Item.RoomId, event.requestContext);
   return new Result('OK');
 }
