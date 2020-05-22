@@ -6,7 +6,6 @@ import { lastUpdated } from './util/lastUpdated';
 
 const db = new DynamoDB.DocumentClient();
 const roomTable = process.env.ROOMS_TABLENAME;
-const connTable = process.env.CONNECTIONS_TABLENAME;
 const corsOrigin = process.env.CORS_ORIGIN;
 const NUMBERS = "0123456789";
 const ALPHANUMS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" + NUMBERS;
