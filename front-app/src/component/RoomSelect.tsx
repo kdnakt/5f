@@ -22,13 +22,13 @@ const RoomSelect: React.FC = () => {
   const [roomNotExists, setRoomNotExists] = useState(false);
 
   const create = useCallback(() => {
-    axios.get('https://k92usz8wj7.execute-api.ap-northeast-1.amazonaws.com/dev/api/rooms/new').then(res => {
+    axios.get(`${process.env.REACT_APP_API_URL}/api/rooms/new`).then(res => {
       setSelectedRoom(res.data.roomId);
       setSessionId(res.data.sessionId);
     });
   }, []);
   const enter = useCallback(() => {
-    axios.get(`https://k92usz8wj7.execute-api.ap-northeast-1.amazonaws.com/dev/api/rooms?id=${roomIdInput}`).then(res => {
+    axios.get(`${process.env.REACT_APP_API_URL}/api/rooms?id=${roomIdInput}`).then(res => {
       setSelectedRoom(res.data.roomId);
       setSessionId(res.data.sessionId);
     }).catch(_ => {
