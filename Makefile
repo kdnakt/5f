@@ -8,7 +8,7 @@ build:
 
 prod:
 	@echo "Deploy Prod API"
-	cd ./apigwt && sls deploy --stage prod --corsOrigin https://kdnakt.github.io/5f/
+	cd ./apigwt && sls deploy --stage prod --corsOrigin https://kdnakt.github.io
 
 dev:
 	@echo "Deploy Dev API"
