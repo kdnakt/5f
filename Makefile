@@ -5,3 +5,11 @@ build:
 	rm -rf docs
 	cd ./front-app && yarn build && mv ./build ./docs && mv ./docs ..
 	rm ./docs/service-worker.js
+
+prod:
+	@echo "Deploy Prod API"
+	cd ./apigwt && sls deploy --stage prod --corsOrigin https://github.io/5f/
+
+dev:
+	@echo "Deploy Dev API"
+	cd ./apigwt && sls deploy
