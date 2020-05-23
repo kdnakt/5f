@@ -12,6 +12,7 @@ const FingerDefs = [
   { count: 3, text: 'normal (3)'},
   { count: 2, text: 'bad (2)'},
   { count: 1, text: 'too bad (1)'},
+  { count: 0, text: 'no way (0)'},
 ];
 
 const FingerSelect: React.FC<{
@@ -21,7 +22,7 @@ const FingerSelect: React.FC<{
   roomId,
   sessionId,
 }) => {
-  const [myCount, setMyCount] = useState(0);
+  const [myCount, setMyCount] = useState(-1);
   const [fingers, setFingers] = useState<Array<Finger>>([]);
   const [connected, setConnected] = useState(false);
   const [closed, setClosed] = useState(false);
@@ -36,7 +37,7 @@ const FingerSelect: React.FC<{
       ws.send(JSON.stringify({
         rid: roomId,
         sid: sessionId,
-        cnt: 0,
+        cnt: -1,
       }));
     };
     ws.onmessage = (e) => {
@@ -55,7 +56,7 @@ const FingerSelect: React.FC<{
       ws.close();
     };
   }, [roomId, sessionId, setSocket, setFingers]);
-  const notPostedCount = fingers?.filter(f => f.cnt === 0).length;
+  const notPostedCount = fingers?.filter(f => f.cnt === -1).length;
   return hasError || closed ? (
     <>
       <div>
@@ -69,8 +70,8 @@ const FingerSelect: React.FC<{
     </>
   ) : connected ? (
     <>
-      {!myCount ? <div>Select Your Status!</div> : undefined}
-      {!myCount ? FingerDefs.map(o => (
+      {myCount === -1 ? <div>Select Your Status!</div> : undefined}
+      {myCount === -1 ? FingerDefs.map(o => (
         <Button key={o.count}
           variant='info'
           onClick={() => {
@@ -97,9 +98,9 @@ const FingerSelect: React.FC<{
               socket?.send(JSON.stringify({
                 rid: roomId,
                 sid: sessionId,
-                cnt: 0,
+                cnt: -1,
               }));
-              setMyCount(0);
+              setMyCount(-1);
             }}
           >Reset</Button>
         </>
@@ -107,7 +108,7 @@ const FingerSelect: React.FC<{
       <hr />
       {notPostedCount === 0 ? fingers?.map((f, i) => {
         const name = sessionId === f.sid ? 'Your Choice' : `User ${++i}`;
-        const count = f.cnt === 0 ? 'Not Selected' : FingerDefs.filter(def => def.count === f.cnt)[0].text;
+        const count = f.cnt === -1 ? 'Not Selected' : FingerDefs.filter(def => def.count === f.cnt)[0].text;
         return (
           <div key={f.sid}>
             <span>{`${name}: ${count}`}</span>
@@ -117,7 +118,7 @@ const FingerSelect: React.FC<{
       }) : (
         <>
           <div>Waiting for everyone to choose ...</div>
-          {(notPostedCount === 1 && myCount === 0) ? (
+          {(notPostedCount === 1 && myCount === -1) ? (
             <div>You are the last one to choose!</div>
           ) : (
             <div>{notPostedCount} person{notPostedCount === 1 ? '' : 's'} left.</div>
