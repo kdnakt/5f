@@ -43,7 +43,7 @@ functions:
     handler: ApiHandler.newRoom
     events:
       - http:
-          method: get
+          method: post
           path: api/rooms/new
           cors:
             origin: ${self:custom.corsOrigin}

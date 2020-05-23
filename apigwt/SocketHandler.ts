@@ -126,6 +126,7 @@ export const onDisconnect: APIGatewayProxyHandler = async (
       TableName: roomTable,
       Item: {
         RoomId: room.Item.RoomId,
+        FingerType: room.Item.FingerType,
         SessionIds: sessionIds,
         LastUpdated: lastUpdated(),
       }

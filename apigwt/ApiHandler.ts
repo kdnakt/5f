@@ -39,12 +39,17 @@ const exists = async (id: string) => {
   return res;
 }
 
-const newRoomId = async (sessionId: string) => {
+const newRoomId = async (sessionId: string, type: string) => {
+  let fingerType = type;
+  if (fingerType !== 'finger' && fingerType !== 'like') {
+    fingerType = 'finger'; // use default
+  }
   const id = randomRoomId();
   await db.put({
     TableName: roomTable,
     Item: {
       RoomId: id,
+      FingerType: fingerType,
       SessionIds: [sessionId],
       LastUpdated: lastUpdated(),
     },
@@ -54,42 +59,43 @@ const newRoomId = async (sessionId: string) => {
   }).catch(e => {
     console.log(e);
   });
-  return id;
+  return [id, fingerType];
 }
 
 const addSession = async (roomId: string, sessionId: string, _context: Context) => {
-  await db.get({
+  const data = await db.get({
     TableName: roomTable,
     Key: {
       RoomId: roomId
     },
-    ProjectionExpression: 'SessionIds, LastUpdated',
-  }).promise().then(data => {
-    if (!data.Item.SessionIds.includes(sessionId)) {
-      data.Item.SessionIds.push(sessionId);
-      db.put({
-        TableName: roomTable,
-        Item: {
-          RoomId: roomId,
-          SessionIds: data.Item.SessionIds,
-          LastUpdated: lastUpdated(),
-        }
-      }).promise();
-    } else {
-      const errMsg = 'session already exists';
-      console.log(errMsg);
-      _context.fail(errMsg);
-    }
-  }).catch(err => {
-    console.log('Error:', err);
-    _context.fail(err);
-  });
+    ProjectionExpression: 'SessionIds, LastUpdated, FingerType',
+  }).promise();
+  if (!data.Item.SessionIds.includes(sessionId)) {
+    data.Item.SessionIds.push(sessionId);
+    db.update({
+      TableName: roomTable,
+      Key: {
+        RoomId: roomId,
+      },
+      UpdateExpression: 'SessionIds = :sids, LastUpdated = :lu',
+      ExpressionAttributeValues: {
+        ':sids': data.Item.SessionIds,
+        ':lu': lastUpdated(),
+      }
+    }).promise();
+  } else {
+    const errMsg = 'session already exists';
+    console.log(errMsg);
+    _context.fail(errMsg);
+  }
+  return data.Item.FingerType;
 }
 
 export const newRoom: APIGatewayProxyHandler = async (event, _context) => {
   console.log('event:', event);
+  const req = JSON.parse(event.body);
   const sessionId = randomSessionId();
-  const roomId = await newRoomId(sessionId);
+  const [roomId, type] = await newRoomId(sessionId, req.type);
   return {
     statusCode: 200,
     headers: {
@@ -97,6 +103,7 @@ export const newRoom: APIGatewayProxyHandler = async (event, _context) => {
     },
     body: JSON.stringify({
       roomId: roomId,
+      type: type,
       sessionId: sessionId,
     })
   };
@@ -126,7 +133,8 @@ export const getRoom: APIGatewayProxyHandler = async (event, _context) => {
     }
   }
   const sessionId = randomSessionId();
-  await addSession(roomId, sessionId, _context);
+  const type = await addSession(roomId, sessionId, _context);
+  console.log(type)
   return {
     statusCode: 200,
     headers: {
@@ -134,6 +142,7 @@ export const getRoom: APIGatewayProxyHandler = async (event, _context) => {
     },
     body: JSON.stringify({
       roomId: roomId,
+      type: type,
       sessionId: sessionId,
     })
   };

@@ -7,21 +7,44 @@ type Finger = {
 };
 
 const FingerDefs = [
-  { count: 5, text: 'very good (5)'},
-  { count: 4, text: 'good (4)'},
-  { count: 3, text: 'normal (3)'},
-  { count: 2, text: 'bad (2)'},
-  { count: 1, text: 'too bad (1)'},
-  { count: 0, text: 'no way (0)'},
+  { count: 5, text: '🖐very good'},
+  { count: 4, text: '👌good'},
+  { count: 3, text: '🤟normal'},
+  { count: 2, text: '✌️bad'},
+  { count: 1, text: '👎too bad'},
+  { count: 0, text: '✊no way'},
 ];
+
+const LikeDefs = [
+  { count: 5, text: '❤️❤️❤️❤️❤️'},
+  { count: 4, text: '❤️❤️❤️❤️🤍'},
+  { count: 3, text: '❤️❤️❤️🤍🤍'},
+  { count: 2, text: '❤️❤️️🤍🤍🤍'},
+  { count: 1, text: '️❤️🤍🤍🤍🤍'},
+  { count: 0, text: '🤍🤍🤍🤍🤍'},
+];
+
+const useFinger = (type: 'finger' | 'like') => {
+  switch (type) {
+    case 'finger':
+      return FingerDefs;
+    case 'like':
+      return LikeDefs;
+    default:
+      return FingerDefs;
+  }
+}
 
 const FingerSelect: React.FC<{
   roomId: string;
   sessionId: string;
+  fingerType: 'finger' | 'like';
 }> = ({
   roomId,
   sessionId,
+  fingerType,
 }) => {
+  const defs = useFinger(fingerType);
   const [myCount, setMyCount] = useState(-1);
   const [fingers, setFingers] = useState<Array<Finger>>([]);
   const [connected, setConnected] = useState(false);
@@ -71,7 +94,7 @@ const FingerSelect: React.FC<{
   ) : connected ? (
     <>
       {myCount === -1 ? <div>Select Your Status!</div> : undefined}
-      {myCount === -1 ? FingerDefs.map(o => (
+      {myCount === -1 ? defs.map(o => (
         <Button key={o.count}
           variant='info'
           onClick={() => {
@@ -91,7 +114,7 @@ const FingerSelect: React.FC<{
         </Button>
       )) : (
         <>
-          <div>Your Choice: {FingerDefs.filter(def => def.count === myCount)[0].text}</div>
+          <div>Your Choice: {defs.filter(def => def.count === myCount)[0].text}</div>
           <Button variant='warning'
             size='sm'
             onClick={() => {
@@ -108,7 +131,7 @@ const FingerSelect: React.FC<{
       <hr />
       {notPostedCount === 0 ? fingers?.map((f, i) => {
         const name = sessionId === f.sid ? 'Your Choice' : `User ${++i}`;
-        const count = f.cnt === -1 ? 'Not Selected' : FingerDefs.filter(def => def.count === f.cnt)[0].text;
+        const count = f.cnt === -1 ? 'Not Selected' : defs.filter(def => def.count === f.cnt)[0].text;
         return (
           <div key={f.sid}>
             <span>{`${name}: ${count}`}</span>
