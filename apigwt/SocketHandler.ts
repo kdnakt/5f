@@ -36,6 +36,7 @@ const broadcast = async (roomId: string, context: APIGatewayEventRequestContextW
   }).promise();
   const data = connections.Items.map(conn => {
     return {
+      nm: conn.NickName,
       sid: conn.SessionId,
       cnt: conn.Count,
     };
@@ -80,6 +81,7 @@ export const onMessage: APIGatewayProxyHandler = async (
     Item: {
       ConnectionId: event.requestContext.connectionId,
       RoomId: req.rid,
+      NickName: req.nm,
       SessionId: req.sid,
       Count: req.cnt,
       LastUpdated: lastUpdated(),

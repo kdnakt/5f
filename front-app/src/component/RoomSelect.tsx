@@ -20,6 +20,7 @@ type FingerType =
   | 'like';
 
 const RoomSelect: React.FC = () => {
+  const [nickName, setNickName] = useState('');
   const [selectedRoom, setSelectedRoom] = useState('');
   const [sessionId, setSessionId] = useState('');
   const [roomIdInput, setRoomIdInput] = useState('');
@@ -28,7 +29,7 @@ const RoomSelect: React.FC = () => {
 
   const create = useCallback(() => {
     axios.post(`${process.env.REACT_APP_API_URL}/api/rooms/new`, {
-      type: fingerType
+      type: fingerType,
     }).then(res => {
       setSelectedRoom(res.data.roomId);
       setFingerType(res.data.type);
@@ -60,6 +61,7 @@ const RoomSelect: React.FC = () => {
         roomId={selectedRoom}
         sessionId={sessionId}
         fingerType={fingerType}
+        nickName={nickName}
       />
     );
   }
@@ -68,6 +70,25 @@ const RoomSelect: React.FC = () => {
       width: '80%',
       margin: '0 auto',
     }}>
+      <Form validated>
+        <FormGroup style={{width: '160px', margin: '8px auto'}}>
+          <FormLabel>Enter Your NickName</FormLabel>
+          <FormControl value={nickName}
+            style={{
+              textAlign: 'center'
+            }}
+            onChange={(e: FormEvent<HTMLInputElement>) => {
+              setNickName(e.currentTarget.value);
+            }}
+            required
+            maxLength={10}
+          />
+          <FormControl.Feedback type='invalid'>
+            Required
+          </FormControl.Feedback>
+        </FormGroup>
+      </Form>
+      <hr />
       <Form style={{
           width: '160px',
           margin: '16px auto',
@@ -94,7 +115,8 @@ const RoomSelect: React.FC = () => {
           </FormControl.Feedback>
         </FormGroup>
         <Button variant='outline-primary'
-          onClick={enter} disabled={!roomIdInput || roomNotExists}
+          onClick={enter}
+          disabled={!roomIdInput || roomNotExists || !nickName}
         >
           Enter the Room
         </Button>
@@ -132,6 +154,7 @@ const RoomSelect: React.FC = () => {
             width: '160px',
           }}
           variant='outline-primary' onClick={create}
+          disabled={!nickName}
         >
           Create New Room
         </Button>

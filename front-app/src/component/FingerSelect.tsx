@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 
 type Finger = {
+  nm: string;
   sid: string;
   cnt: number;
 };
@@ -39,10 +40,12 @@ const FingerSelect: React.FC<{
   roomId: string;
   sessionId: string;
   fingerType: 'finger' | 'like';
+  nickName: string;
 }> = ({
   roomId,
   sessionId,
   fingerType,
+  nickName,
 }) => {
   const defs = useFinger(fingerType);
   const [myCount, setMyCount] = useState(-1);
@@ -58,6 +61,7 @@ const FingerSelect: React.FC<{
     ws.onopen = () => {
       setConnected(true);
       ws.send(JSON.stringify({
+        nm: nickName,
         rid: roomId,
         sid: sessionId,
         cnt: -1,
@@ -78,7 +82,7 @@ const FingerSelect: React.FC<{
     return () => {
       ws.close();
     };
-  }, [roomId, sessionId, setSocket, setFingers]);
+  }, [roomId, sessionId, setSocket, setFingers, nickName]);
   const notPostedCount = fingers?.filter(f => f.cnt === -1).length;
   return hasError || closed ? (
     <>
@@ -99,6 +103,7 @@ const FingerSelect: React.FC<{
           variant='info'
           onClick={() => {
             socket?.send(JSON.stringify({
+              nm: nickName,
               rid: roomId,
               sid: sessionId,
               cnt: o.count,
@@ -119,6 +124,7 @@ const FingerSelect: React.FC<{
             size='sm'
             onClick={() => {
               socket?.send(JSON.stringify({
+                nm: nickName,
                 rid: roomId,
                 sid: sessionId,
                 cnt: -1,
@@ -130,7 +136,7 @@ const FingerSelect: React.FC<{
       )}
       <hr />
       {notPostedCount === 0 ? fingers?.map((f, i) => {
-        const name = sessionId === f.sid ? 'Your Choice' : `User ${++i}`;
+        const name = sessionId === f.sid ? 'Your Choice' : f.nm;
         const count = f.cnt === -1 ? 'Not Selected' : defs.filter(def => def.count === f.cnt)[0].text;
         return (
           <div key={f.sid}>
