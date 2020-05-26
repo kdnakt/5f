@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
+import { RoomProps } from './Room';
 
 type Finger = {
   nm: string;
@@ -36,18 +37,8 @@ const useFinger = (type: 'finger' | 'like') => {
   }
 }
 
-const FingerSelect: React.FC<{
-  roomId: string;
-  sessionId: string;
-  fingerType: 'finger' | 'like';
-  nickName: string;
-}> = ({
-  roomId,
-  sessionId,
-  fingerType,
-  nickName,
-}) => {
-  const defs = useFinger(fingerType);
+const FingerSelect: React.FC<RoomProps> = ({session}) => {
+  const defs = useFinger(session.fingerType);
   const [myCount, setMyCount] = useState(-1);
   const [fingers, setFingers] = useState<Array<Finger>>([]);
   const [connected, setConnected] = useState(false);
@@ -55,15 +46,15 @@ const FingerSelect: React.FC<{
   const [hasError, setHasError] = useState(false);
   const [socket, setSocket] = useState<WebSocket>();
   useEffect(() => {
-    if (!roomId || !sessionId) return;
+    if (!session.roomId || !session.sessionId) return;
     const ws = new WebSocket(`${process.env.REACT_APP_WS_URL}`);
     setSocket(ws);
     ws.onopen = () => {
       setConnected(true);
       ws.send(JSON.stringify({
-        nm: nickName,
-        rid: roomId,
-        sid: sessionId,
+        nm: session.nickName,
+        rid: session.roomId,
+        sid: session.sessionId,
         cnt: -1,
       }));
     };
@@ -82,7 +73,7 @@ const FingerSelect: React.FC<{
     return () => {
       ws.close();
     };
-  }, [roomId, sessionId, setSocket, setFingers, nickName]);
+  }, [session, setSocket, setFingers]);
   const notPostedCount = fingers?.filter(f => f.cnt === -1).length;
   return hasError || closed ? (
     <>
@@ -103,9 +94,9 @@ const FingerSelect: React.FC<{
           variant='info'
           onClick={() => {
             socket?.send(JSON.stringify({
-              nm: nickName,
-              rid: roomId,
-              sid: sessionId,
+              nm: session.nickName,
+              rid: session.roomId,
+              sid: session.sessionId,
               cnt: o.count,
             }));
             setMyCount(o.count);
@@ -124,9 +115,9 @@ const FingerSelect: React.FC<{
             size='sm'
             onClick={() => {
               socket?.send(JSON.stringify({
-                nm: nickName,
-                rid: roomId,
-                sid: sessionId,
+                nm: session.nickName,
+                rid: session.roomId,
+                sid: session.sessionId,
                 cnt: -1,
               }));
               setMyCount(-1);
@@ -136,7 +127,7 @@ const FingerSelect: React.FC<{
       )}
       <hr />
       {notPostedCount === 0 ? fingers?.map((f, i) => {
-        const name = sessionId === f.sid ? 'Your Choice' : f.nm;
+        const name = session.sessionId === f.sid ? 'Your Choice' : f.nm;
         const count = f.cnt === -1 ? 'Not Selected' : defs.filter(def => def.count === f.cnt)[0].text;
         return (
           <div key={f.sid}>

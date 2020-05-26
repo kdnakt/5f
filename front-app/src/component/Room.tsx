@@ -1,26 +1,18 @@
 import React from 'react';
 import FingerSelect from './FingerSelect';
+import { Session } from '../App';
 
-const Room: React.FC<{
-  roomId: string;
-  sessionId: string;
-  fingerType: 'finger' | 'like'
-  nickName: string;
-}> = ({
-  roomId,
-  sessionId,
-  fingerType,
-  nickName,
-}) => {
+export type RoomProps = {
+  session: Session;
+}
+
+const Room: React.FC<RoomProps> = ({session}) => {
   return (
     <>
       <hr />
-      <div>Room ID: {roomId}</div>
+      <div>Room ID: {session.roomId}</div>
       <div>
-        <FingerSelect roomId={roomId} sessionId={sessionId}
-          fingerType={fingerType}
-          nickName={nickName}
-        />
+        <FingerSelect session={session} />
       </div>
     </>
   );

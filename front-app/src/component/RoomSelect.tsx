@@ -3,7 +3,7 @@ import {
   Button, FormGroup, FormControl, Form, FormLabel, Row, Col,
 } from 'react-bootstrap';
 import axios from 'axios';
-import Room from './Room';
+import { FingerType, Session } from '../App';
 
 function validateRoomId(roomIdInput: string) {
   if (isNaN(Number(roomIdInput))) {
@@ -15,14 +15,12 @@ function validateRoomId(roomIdInput: string) {
   }
 }
 
-type FingerType =
-  | 'finger'
-  | 'like';
+type Props = {
+  setSession: (s: Session) => void
+}
 
-const RoomSelect: React.FC = () => {
+const RoomSelect: React.FC<Props> = ({setSession}) => {
   const [nickName, setNickName] = useState('');
-  const [selectedRoom, setSelectedRoom] = useState('');
-  const [sessionId, setSessionId] = useState('');
   const [roomIdInput, setRoomIdInput] = useState('');
   const [roomNotExists, setRoomNotExists] = useState(false);
   const [fingerType, setFingerType] = useState<FingerType>('finger');
@@ -30,21 +28,21 @@ const RoomSelect: React.FC = () => {
   const create = useCallback(() => {
     axios.post(`${process.env.REACT_APP_API_URL}/api/rooms/new`, {
       type: fingerType,
-    }).then(res => {
-      setSelectedRoom(res.data.roomId);
-      setFingerType(res.data.type);
-      setSessionId(res.data.sessionId);
-    });
-  }, [fingerType]);
+    }).then(res => setSession({
+      roomId: res.data.roomId,
+      sessionId: res.data.sessionId,
+      fingerType: res.data.type,
+      nickName: nickName,
+    }));
+  }, [fingerType, nickName, setSession]);
   const enter = useCallback(() => {
-    axios.get(`${process.env.REACT_APP_API_URL}/api/rooms?id=${roomIdInput}`).then(res => {
-      setSelectedRoom(res.data.roomId);
-      setFingerType(res.data.type);
-      setSessionId(res.data.sessionId);
-    }).catch(_ => {
-      setRoomNotExists(true);
-    });
-  }, [roomIdInput]);
+    axios.get(`${process.env.REACT_APP_API_URL}/api/rooms?id=${roomIdInput}`).then(res => setSession({
+      roomId: res.data.roomId,
+      sessionId: res.data.sessionId,
+      fingerType: res.data.type,
+      nickName: nickName,
+    })).catch(_ => setRoomNotExists(true));
+  }, [roomIdInput, nickName, setSession]);
   const [roomIdFeedback, setRoomIdFeedback] = useState('');
   const roomIdRef = createRef<HTMLInputElement>();
   useEffect(() => {
@@ -55,16 +53,7 @@ const RoomSelect: React.FC = () => {
       roomIdRef.current!.setCustomValidity(result);
     }
   }, [roomIdInput, roomIdRef, roomNotExists]);
-  if (selectedRoom && sessionId) {
-    return (
-      <Room
-        roomId={selectedRoom}
-        sessionId={sessionId}
-        fingerType={fingerType}
-        nickName={nickName}
-      />
-    );
-  }
+
   return (
     <div style={{
       width: '80%',
