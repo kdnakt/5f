@@ -63,6 +63,7 @@ const RoomSelect: React.FC<Props> = ({setSession}) => {
         <FormGroup style={{width: '160px', margin: '8px auto'}}>
           <FormLabel>Enter Your NickName</FormLabel>
           <FormControl value={nickName}
+            data-testid='nickname-input'
             style={{
               textAlign: 'center'
             }}
@@ -72,7 +73,7 @@ const RoomSelect: React.FC<Props> = ({setSession}) => {
             required
             maxLength={10}
           />
-          <FormControl.Feedback type='invalid'>
+          <FormControl.Feedback type='invalid' data-testid='nickname-feedback'>
             Required
           </FormControl.Feedback>
         </FormGroup>
@@ -99,12 +100,13 @@ const RoomSelect: React.FC<Props> = ({setSession}) => {
             pattern='[0-9]{6}'
             maxLength={6}
           />
-          <FormControl.Feedback type='invalid'>
+          <FormControl.Feedback type='invalid' data-testid='room-id-feedback'>
             {roomIdFeedback}
           </FormControl.Feedback>
         </FormGroup>
         <Button variant='outline-primary'
           onClick={enter}
+          data-testid='enter-button'
           disabled={!roomIdInput || roomNotExists || !nickName}
         >
           Enter the Room
