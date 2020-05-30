@@ -37,3 +37,14 @@ test('renders Enter Room ID', () => {
   fireEvent.change(nickNameInput, { target: { value: 'hoge' }});
   expect(enterButton).toBeEnabled();
 });
+
+test('renders Create New Room', () => {
+  const App =render(<RoomSelect setSession={setSession} />);
+  const createButton = App.getByTestId('create-button');
+  expect(createButton).toBeInTheDocument();
+  expect(createButton).toBeDisabled();
+
+  const nickNameInput = App.getByTestId('nickname-input');
+  fireEvent.change(nickNameInput, { target: { value: 'hoge' }});
+  expect(createButton).toBeEnabled();
+});

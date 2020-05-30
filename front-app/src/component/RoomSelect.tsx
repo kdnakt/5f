@@ -144,6 +144,7 @@ const RoomSelect: React.FC<Props> = ({setSession}) => {
             margin: '16px auto',
             width: '160px',
           }}
+          data-testid='create-button'
           variant='outline-primary' onClick={create}
           disabled={!nickName}
         >
