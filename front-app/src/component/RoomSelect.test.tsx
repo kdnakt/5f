@@ -38,8 +38,23 @@ test('renders Enter Room ID', () => {
   expect(enterButton).toBeEnabled();
 });
 
-test('renders Create New Room', () => {
-  const App =render(<RoomSelect setSession={setSession} />);
+let postCalled = false;
+jest.mock('axios', () => ({
+  post: () => {
+    return new Promise(resolve => {
+      postCalled = true;
+      resolve({ data: {
+        roomId: '999999',
+        sessionId: 'aaaabbbbccccdddd',
+        fingerType: 'like',
+        nickName: 'hoge',
+      }});
+    });
+  }
+}));
+
+test('renders Create New Room', async () => {
+  const App = render(<RoomSelect setSession={setSession} />);
   const createButton = App.getByTestId('create-button');
   expect(createButton).toBeInTheDocument();
   expect(createButton).toBeDisabled();
@@ -47,4 +62,7 @@ test('renders Create New Room', () => {
   const nickNameInput = App.getByTestId('nickname-input');
   fireEvent.change(nickNameInput, { target: { value: 'hoge' }});
   expect(createButton).toBeEnabled();
+
+  fireEvent.click(createButton);
+  expect(postCalled).toBe(true);
 });
