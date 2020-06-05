@@ -10,7 +10,7 @@ const Room: React.FC<RoomProps> = ({session}) => {
   return (
     <>
       <hr />
-      <div>Room ID: {session.roomId}</div>
+      <div data-testid='roomid'>Room ID: {session.roomId}</div>
       <div>
         <FingerSelect session={session} />
       </div>
