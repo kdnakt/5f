@@ -3,6 +3,7 @@ import { Button } from 'react-bootstrap';
 import { RoomProps } from './Room';
 import { useFinger } from '../data/Fingers';
 import MyResult from './MyResult';
+import Progress from './Progress';
 
 type Finger = {
   nm: string;
@@ -98,16 +99,10 @@ const FingerSelect: React.FC<RoomProps> = ({session}) => {
             <br />
           </div>
         );
-      }) : (
-        <>
-          <div>Waiting for everyone to choose ...</div>
-          {(notPostedCount === 1 && myCount === -1) ? (
-            <div>You are the last one to choose!</div>
-          ) : (
-            <div>{notPostedCount} person{notPostedCount === 1 ? '' : 's'} left.</div>
-          )}
-        </>
-      )}
+      }) : (<Progress
+        notPostedCount={notPostedCount}
+        myCount={myCount}
+      />)}
     </>
   ) : (
     <>
