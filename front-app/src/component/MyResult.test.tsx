@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import MyResult from './MyResult';
 import { useFinger } from '../data/Fingers';
 import { render } from '@testing-library/react';
