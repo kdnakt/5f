@@ -32,3 +32,9 @@ export const useFinger = (type: 'finger' | 'like') => {
       return FingerDefs;
   }
 }
+
+export type Finger = {
+  nm: string;
+  sid: string;
+  cnt: number;
+};

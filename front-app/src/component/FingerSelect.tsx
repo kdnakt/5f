@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { RoomProps } from './Room';
-import { useFinger } from '../data/Fingers';
+import { useFinger, Finger } from '../data/Fingers';
 import MyResult from './MyResult';
 import Progress from './Progress';
-
-type Finger = {
-  nm: string;
-  sid: string;
-  cnt: number;
-};
+import RoomResult from './RoomResult';
 
 const FingerSelect: React.FC<RoomProps> = ({session}) => {
   const defs = useFinger(session.fingerType);
@@ -90,16 +85,11 @@ const FingerSelect: React.FC<RoomProps> = ({session}) => {
         session={session}
       />)}
       <hr />
-      {notPostedCount === 0 ? fingers?.map((f, i) => {
-        const name = session.sessionId === f.sid ? 'Your Choice' : f.nm;
-        const count = f.cnt === -1 ? 'Not Selected' : defs.filter(def => def.count === f.cnt)[0].text;
-        return (
-          <div key={f.sid}>
-            <span>{`${name}: ${count}`}</span>
-            <br />
-          </div>
-        );
-      }) : (<Progress
+      {notPostedCount === 0 ? (<RoomResult
+        fingers={fingers}
+        session={session}
+        defs={defs}
+      />) : (<Progress
         notPostedCount={notPostedCount}
         myCount={myCount}
       />)}
