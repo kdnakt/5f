@@ -5,6 +5,7 @@ import { useFinger, Finger } from '../data/Fingers';
 import MyResult from './MyResult';
 import Progress from './Progress';
 import RoomResult from './RoomResult';
+import SocketError from './SocketError';
 
 const FingerSelect: React.FC<RoomProps> = ({session}) => {
   const defs = useFinger(session.fingerType);
@@ -45,16 +46,7 @@ const FingerSelect: React.FC<RoomProps> = ({session}) => {
   }, [session, setSocket, setFingers]);
   const notPostedCount = fingers?.filter(f => f.cnt === -1).length;
   return hasError || closed ? (
-    <>
-      <div>
-        Sorry, something went wrong.
-      </div>
-      <Button variant='outline-primary'
-        onClick={() => document.location.reload()}
-      >
-        Back to Lobby
-      </Button>
-    </>
+    <SocketError />
   ) : connected ? (
     <>
       {myCount === -1 ? <div>Select Your Status!</div> : undefined}
