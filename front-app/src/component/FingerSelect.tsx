@@ -6,6 +6,7 @@ import MyResult from './MyResult';
 import Progress from './Progress';
 import RoomResult from './RoomResult';
 import SocketError from './SocketError';
+import VotingForm from './VotingForm';
 
 const FingerSelect: React.FC<RoomProps> = ({session}) => {
   const defs = useFinger(session.fingerType);
@@ -50,26 +51,11 @@ const FingerSelect: React.FC<RoomProps> = ({session}) => {
   ) : connected ? (
     <>
       {myCount === -1 ? <div>Select Your Status!</div> : undefined}
-      {myCount === -1 ? defs.map(o => (
-        <Button key={o.count}
-          variant='info'
-          onClick={() => {
-            socket?.send(JSON.stringify({
-              nm: session.nickName,
-              rid: session.roomId,
-              sid: session.sessionId,
-              cnt: o.count,
-            }));
-            setMyCount(o.count);
-          }}
-          style={{
-            margin: '16px',
-            width: '128px'
-          }}
-        >
-          {o.text}
-        </Button>
-      )) : (<MyResult
+      {myCount === -1 ? (<VotingForm defs={defs}
+        session={session}
+        socket={socket}
+        setMyCount={setMyCount}
+      />) : (<MyResult
         defs={defs}
         myCount={myCount}
         setMyCount={setMyCount}
