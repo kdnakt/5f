@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from 'react-bootstrap';
 import { RoomProps } from './Room';
 import { useFinger, Finger } from '../data/Fingers';
 import MyResult from './MyResult';
