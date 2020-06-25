@@ -3,6 +3,7 @@ import './App.css';
 import Footer from './component/Footer';
 import RoomSelect from './component/RoomSelect';
 import Room from './component/Room';
+import AppTitle from './component/AppTitle';
 
 export type FingerType = 'finger' | 'like';
 
@@ -24,7 +25,7 @@ const App: React.FC = () => {
   const [session, setSession] = useState<Session>(initialSession);
   return (
     <div className="App">
-      <h3>{`${process.env.REACT_APP_OGP_TITLE}`}</h3>
+      <AppTitle />
       {session.roomId && session.sessionId ?
         <Room session={session} /> :
         <RoomSelect setSession={setSession} />}

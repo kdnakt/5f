@@ -1,0 +1,362 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshot test 1`] = `
+Object {
+  "asFragment": [Function],
+  "baseElement": <body>
+    <div>
+      <div
+        class="App"
+      >
+        <h3>
+          5F_test_mode
+        </h3>
+        <div
+          style="width: 80%; margin: 0px auto;"
+        >
+          <form
+            class="was-validated"
+          >
+            <div
+              class="form-group"
+              style="width: 160px; margin: 8px auto;"
+            >
+              <label
+                class="form-label"
+              >
+                Enter Your NickName
+              </label>
+              <input
+                class="form-control"
+                data-testid="nickname-input"
+                maxlength="10"
+                required=""
+                style="text-align: center;"
+                value=""
+              />
+              <div
+                class="invalid-feedback"
+                data-testid="nickname-feedback"
+              >
+                Required
+              </div>
+            </div>
+          </form>
+          <hr />
+          <form
+            class=""
+            style="width: 160px; margin: 16px auto;"
+          >
+            <div
+              class="form-group"
+            >
+              <label
+                class="form-label"
+              >
+                Enter Room ID
+              </label>
+              <input
+                class="form-control"
+                maxlength="6"
+                pattern="[0-9]{6}"
+                placeholder="123456"
+                style="text-align: center;"
+                value=""
+              />
+              <div
+                class="invalid-feedback"
+                data-testid="room-id-feedback"
+              >
+                6 digits needed.
+              </div>
+            </div>
+            <button
+              class="btn btn-outline-primary"
+              data-testid="enter-button"
+              disabled=""
+              type="button"
+            >
+              Enter the Room
+            </button>
+          </form>
+          <form
+            class=""
+            style="width: 160px; margin: 0px auto; padding: 16px 0px;"
+          >
+            <div
+              class="form-group row"
+            >
+              <div
+                class="col-sm-10"
+              >
+                <div
+                  class="custom-control custom-radio"
+                  style="float: left; margin: 0px 8px;"
+                >
+                  <input
+                    checked=""
+                    class="custom-control-input"
+                    id="finger-type-finger"
+                    name="finger-type"
+                    type="radio"
+                    value="finger"
+                  />
+                  <label
+                    class="custom-control-label"
+                    for="finger-type-finger"
+                    title=""
+                  >
+                    Finger 🖐
+                  </label>
+                </div>
+                <div
+                  class="custom-control custom-radio"
+                  style="float: left; margin: 0px 8px;"
+                >
+                  <input
+                    class="custom-control-input"
+                    id="finger-type-like"
+                    name="finger-type"
+                    type="radio"
+                    value="finger"
+                  />
+                  <label
+                    class="custom-control-label"
+                    for="finger-type-like"
+                    title=""
+                  >
+                    Like ❤️
+                  </label>
+                </div>
+              </div>
+            </div>
+            <button
+              class="btn btn-outline-primary"
+              data-testid="create-button"
+              disabled=""
+              style="margin: 16px auto; width: 160px;"
+              type="button"
+            >
+              Create New Room
+            </button>
+          </form>
+        </div>
+        <footer
+          style="width: 100%; position: absolute; bottom: 0px; height: 60px; line-height: 60px; background-color: rgb(245, 245, 245);"
+        >
+          ver
+          test-version
+           / Copyright © 2020 
+          <a
+            href="https://twitter.com/kdnakt"
+          >
+            kdnakt
+          </a>
+        </footer>
+      </div>
+    </div>
+  </body>,
+  "container": <div>
+    <div
+      class="App"
+    >
+      <h3>
+        5F_test_mode
+      </h3>
+      <div
+        style="width: 80%; margin: 0px auto;"
+      >
+        <form
+          class="was-validated"
+        >
+          <div
+            class="form-group"
+            style="width: 160px; margin: 8px auto;"
+          >
+            <label
+              class="form-label"
+            >
+              Enter Your NickName
+            </label>
+            <input
+              class="form-control"
+              data-testid="nickname-input"
+              maxlength="10"
+              required=""
+              style="text-align: center;"
+              value=""
+            />
+            <div
+              class="invalid-feedback"
+              data-testid="nickname-feedback"
+            >
+              Required
+            </div>
+          </div>
+        </form>
+        <hr />
+        <form
+          class=""
+          style="width: 160px; margin: 16px auto;"
+        >
+          <div
+            class="form-group"
+          >
+            <label
+              class="form-label"
+            >
+              Enter Room ID
+            </label>
+            <input
+              class="form-control"
+              maxlength="6"
+              pattern="[0-9]{6}"
+              placeholder="123456"
+              style="text-align: center;"
+              value=""
+            />
+            <div
+              class="invalid-feedback"
+              data-testid="room-id-feedback"
+            >
+              6 digits needed.
+            </div>
+          </div>
+          <button
+            class="btn btn-outline-primary"
+            data-testid="enter-button"
+            disabled=""
+            type="button"
+          >
+            Enter the Room
+          </button>
+        </form>
+        <form
+          class=""
+          style="width: 160px; margin: 0px auto; padding: 16px 0px;"
+        >
+          <div
+            class="form-group row"
+          >
+            <div
+              class="col-sm-10"
+            >
+              <div
+                class="custom-control custom-radio"
+                style="float: left; margin: 0px 8px;"
+              >
+                <input
+                  checked=""
+                  class="custom-control-input"
+                  id="finger-type-finger"
+                  name="finger-type"
+                  type="radio"
+                  value="finger"
+                />
+                <label
+                  class="custom-control-label"
+                  for="finger-type-finger"
+                  title=""
+                >
+                  Finger 🖐
+                </label>
+              </div>
+              <div
+                class="custom-control custom-radio"
+                style="float: left; margin: 0px 8px;"
+              >
+                <input
+                  class="custom-control-input"
+                  id="finger-type-like"
+                  name="finger-type"
+                  type="radio"
+                  value="finger"
+                />
+                <label
+                  class="custom-control-label"
+                  for="finger-type-like"
+                  title=""
+                >
+                  Like ❤️
+                </label>
+              </div>
+            </div>
+          </div>
+          <button
+            class="btn btn-outline-primary"
+            data-testid="create-button"
+            disabled=""
+            style="margin: 16px auto; width: 160px;"
+            type="button"
+          >
+            Create New Room
+          </button>
+        </form>
+      </div>
+      <footer
+        style="width: 100%; position: absolute; bottom: 0px; height: 60px; line-height: 60px; background-color: rgb(245, 245, 245);"
+      >
+        ver
+        test-version
+         / Copyright © 2020 
+        <a
+          href="https://twitter.com/kdnakt"
+        >
+          kdnakt
+        </a>
+      </footer>
+    </div>
+  </div>,
+  "debug": [Function],
+  "findAllByAltText": [Function],
+  "findAllByDisplayValue": [Function],
+  "findAllByLabelText": [Function],
+  "findAllByPlaceholderText": [Function],
+  "findAllByRole": [Function],
+  "findAllByTestId": [Function],
+  "findAllByText": [Function],
+  "findAllByTitle": [Function],
+  "findByAltText": [Function],
+  "findByDisplayValue": [Function],
+  "findByLabelText": [Function],
+  "findByPlaceholderText": [Function],
+  "findByRole": [Function],
+  "findByTestId": [Function],
+  "findByText": [Function],
+  "findByTitle": [Function],
+  "getAllByAltText": [Function],
+  "getAllByDisplayValue": [Function],
+  "getAllByLabelText": [Function],
+  "getAllByPlaceholderText": [Function],
+  "getAllByRole": [Function],
+  "getAllByTestId": [Function],
+  "getAllByText": [Function],
+  "getAllByTitle": [Function],
+  "getByAltText": [Function],
+  "getByDisplayValue": [Function],
+  "getByLabelText": [Function],
+  "getByPlaceholderText": [Function],
+  "getByRole": [Function],
+  "getByTestId": [Function],
+  "getByText": [Function],
+  "getByTitle": [Function],
+  "queryAllByAltText": [Function],
+  "queryAllByDisplayValue": [Function],
+  "queryAllByLabelText": [Function],
+  "queryAllByPlaceholderText": [Function],
+  "queryAllByRole": [Function],
+  "queryAllByTestId": [Function],
+  "queryAllByText": [Function],
+  "queryAllByTitle": [Function],
+  "queryByAltText": [Function],
+  "queryByDisplayValue": [Function],
+  "queryByLabelText": [Function],
+  "queryByPlaceholderText": [Function],
+  "queryByRole": [Function],
+  "queryByTestId": [Function],
+  "queryByText": [Function],
+  "queryByTitle": [Function],
+  "rerender": [Function],
+  "unmount": [Function],
+}
+`;

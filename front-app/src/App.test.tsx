@@ -7,3 +7,8 @@ test('renders app title', () => {
   const titleElement = getByText(/5F_test_mode/i);
   expect(titleElement).toBeInTheDocument();
 });
+
+test('snapshot test', () => {
+  const app = render(<App />);
+  expect(app).toMatchSnapshot();
+});
