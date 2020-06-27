@@ -3,7 +3,8 @@ import {
   Button, FormGroup, FormControl, Form, FormLabel, Row, Col,
 } from 'react-bootstrap';
 import axios from 'axios';
-import { FingerType, Session } from '../App';
+import { Session } from '../App';
+import { FingerType } from '../data/Fingers';
 
 function validateRoomId(roomIdInput: string) {
   if (isNaN(Number(roomIdInput))) {

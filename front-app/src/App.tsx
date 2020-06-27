@@ -4,8 +4,7 @@ import Footer from './component/Footer';
 import RoomSelect from './component/RoomSelect';
 import Room from './component/Room';
 import AppTitle from './component/AppTitle';
-
-export type FingerType = 'finger' | 'like';
+import { FingerType } from './data/Fingers';
 
 export type Session = {
   roomId: string,

@@ -1,4 +1,6 @@
 
+export type FingerType = 'finger' | 'like';
+
 export type Def = {
   count: number;
   text: string;
@@ -22,7 +24,7 @@ const LikeDefs: Def[] = [
   { count: 0, text: '🤍🤍🤍🤍🤍'},
 ];
 
-export const useFinger = (type: 'finger' | 'like') => {
+export const useFinger = (type: FingerType) => {
   switch (type) {
     case 'finger':
       return FingerDefs;
