@@ -4,7 +4,7 @@ import {
 } from 'react-bootstrap';
 import axios from 'axios';
 import { Session } from '../App';
-import { FingerType } from '../data/Fingers';
+import { FingerType, FingerOptions } from '../data/Fingers';
 
 function validateRoomId(roomIdInput: string) {
   if (isNaN(Number(roomIdInput))) {
@@ -121,24 +121,17 @@ const RoomSelect: React.FC<Props> = ({setSession}) => {
       >
         <FormGroup as={Row}>
           <Col sm={10}>
-            <Form.Check value={fingerType}
-              type='radio' custom
-              checked={fingerType === 'finger'}
-              onChange={() => setFingerType('finger')}
-              name='finger-type'
-              id='finger-type-finger'
-              style={{float: 'left', margin: '0 8px'}}
-              label='Finger 🖐'
-            />
-            <Form.Check value={fingerType}
-              type='radio' custom
-              checked={fingerType === 'like'}
-              onChange={() => setFingerType('like')}
-              name='finger-type'
-              id='finger-type-like'
-              style={{float: 'left', margin: '0 8px'}}
-              label='Like ❤️'
-            />
+            {FingerOptions.map(opt => (
+              <Form.Check value={fingerType} custom type='radio'
+                key={opt.id}
+                checked={fingerType === opt.id}
+                onChange={() => setFingerType(opt.id)}
+                name='finger-type'
+                id={`finger-type-${opt.id}`}
+                style={{float: 'left', margin: '0 8px'}}
+                label={opt.label}
+              />
+            ))}
           </Col>
         </FormGroup>
         <Button style={{

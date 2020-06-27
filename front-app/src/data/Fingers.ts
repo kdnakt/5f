@@ -1,6 +1,22 @@
 
 export type FingerType = 'finger' | 'like';
 
+type FingerOption = {
+  id: FingerType;
+  label: string;
+}
+
+export const FingerOptions: FingerOption[] = [
+  {
+    id: 'finger',
+    label: 'Finger 🖐',
+  },
+  {
+    id: 'like',
+    label: 'Like ❤️',
+  },
+];
+
 export type Def = {
   count: number;
   text: string;
