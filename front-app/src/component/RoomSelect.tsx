@@ -39,12 +39,12 @@ const RoomSelect: React.FC<Props> = ({setSession}) => {
     axios.post(`${process.env.REACT_APP_API_URL}/api/rooms/new`, {
       type: fingerType,
     }).then(res => setResponse(res));
-  }, [fingerType, nickName, setSession]);
+  }, [fingerType, setResponse]);
   const enter = useCallback(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/api/rooms?id=${roomIdInput}`)
     .then(res => setResponse(res))
     .catch(_ => setRoomNotExists(true));
-  }, [roomIdInput, nickName, setSession]);
+  }, [roomIdInput, setResponse]);
   const [roomIdFeedback, setRoomIdFeedback] = useState('');
   const roomIdRef = createRef<HTMLInputElement>();
   useEffect(() => {
