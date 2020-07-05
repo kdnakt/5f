@@ -33,7 +33,7 @@ const RoomSelect: React.FC<Props> = ({setSession}) => {
       fingerType: res.data.type,
       nickName: nickName,
     });
-  }, []);
+  }, [setSession, nickName]);
 
   const create = useCallback(() => {
     axios.post(`${process.env.REACT_APP_API_URL}/api/rooms/new`, {
