@@ -2,7 +2,7 @@ import React, { useState, useCallback, FormEvent, createRef, RefObject, useEffec
 import {
   Button, FormGroup, FormControl, Form, FormLabel, Row, Col,
 } from 'react-bootstrap';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { Session } from '../App';
 import { FingerType, FingerOptions } from '../data/Fingers';
 
@@ -26,23 +26,24 @@ const RoomSelect: React.FC<Props> = ({setSession}) => {
   const [roomNotExists, setRoomNotExists] = useState(false);
   const [fingerType, setFingerType] = useState<FingerType>('finger');
 
+  const setResponse = useCallback((res: AxiosResponse) => {
+    setSession({
+      roomId: res.data.roomId,
+      sessionId: res.data.sessionId,
+      fingerType: res.data.type,
+      nickName: nickName,
+    });
+  }, []);
+
   const create = useCallback(() => {
     axios.post(`${process.env.REACT_APP_API_URL}/api/rooms/new`, {
       type: fingerType,
-    }).then(res => setSession({
-      roomId: res.data.roomId,
-      sessionId: res.data.sessionId,
-      fingerType: res.data.type,
-      nickName: nickName,
-    }));
+    }).then(res => setResponse(res));
   }, [fingerType, nickName, setSession]);
   const enter = useCallback(() => {
-    axios.get(`${process.env.REACT_APP_API_URL}/api/rooms?id=${roomIdInput}`).then(res => setSession({
-      roomId: res.data.roomId,
-      sessionId: res.data.sessionId,
-      fingerType: res.data.type,
-      nickName: nickName,
-    })).catch(_ => setRoomNotExists(true));
+    axios.get(`${process.env.REACT_APP_API_URL}/api/rooms?id=${roomIdInput}`)
+    .then(res => setResponse(res))
+    .catch(_ => setRoomNotExists(true));
   }, [roomIdInput, nickName, setSession]);
   const [roomIdFeedback, setRoomIdFeedback] = useState('');
   const roomIdRef = createRef<HTMLInputElement>();
