@@ -41,11 +41,12 @@ const broadcast = async (roomId: string, context: APIGatewayEventRequestContextW
       cnt: conn.Count,
     };
   });
+  const notPostedCount = data.filter(f => f.cnt === -1).length;
   await Promise.all(connections.Items.map(async (conn) => {
     try {
       const params: ApiGatewayManagementApi.Types.PostToConnectionRequest = {
         ConnectionId: conn.ConnectionId,
-        Data: JSON.stringify(data),
+        Data: JSON.stringify(notPostedCount === 0 ? data : []),
       };
       await apigateway(context).postToConnection(params).promise();
     } catch (e) {
