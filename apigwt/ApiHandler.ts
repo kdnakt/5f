@@ -123,7 +123,7 @@ export const getRoom: APIGatewayProxyHandler = async (event, _context) => {
     };
   }
   if (!exists(roomId)) {
-    console.log(`${roomId} doens't exist`);
+    console.log(`${roomId} doesn't exist`);
     return {
       statusCode: 400,
       headers: {
