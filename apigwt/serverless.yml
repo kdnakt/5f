@@ -30,12 +30,12 @@ provider:
             - '/index/roomid-index'
 
 custom:
-  corsOrigin: ${opt:corsOrigin, 'http://localhost:3000'}
+  corsOrigin: ${param:corsOrigin, 'http://localhost:3000'}
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules: true
-  roomsTable: ${self:service.name}-rooms-${self:provider.stage}
-  connectionsTable: ${self:service.name}-connections-${self:provider.stage}
+  roomsTable: ${self:service}-rooms-${self:provider.stage}
+  connectionsTable: ${self:service}-connections-${self:provider.stage}
 
 functions:
   newRoom:
