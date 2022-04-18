@@ -7,6 +7,7 @@ import {
 import 'source-map-support';
 import { DynamoDB, ApiGatewayManagementApi } from 'aws-sdk';
 import { lastUpdated } from './util/lastUpdated';
+import { mask } from './domain/Finger';
 
 interface APIGatewayProxyEventWithWebSocket extends APIGatewayProxyEvent {
   requestContext: APIGatewayEventRequestContextWithWebSocket
@@ -41,12 +42,11 @@ const broadcast = async (roomId: string, context: APIGatewayEventRequestContextW
       cnt: conn.Count,
     };
   });
-  const notPostedCount = data.filter(f => f.cnt === -1).length;
   await Promise.all(connections.Items.map(async (conn) => {
     try {
       const params: ApiGatewayManagementApi.Types.PostToConnectionRequest = {
         ConnectionId: conn.ConnectionId,
-        Data: JSON.stringify(notPostedCount === 0 ? data : []),
+        Data: JSON.stringify(mask(data)),
       };
       await apigateway(context).postToConnection(params).promise();
     } catch (e) {
