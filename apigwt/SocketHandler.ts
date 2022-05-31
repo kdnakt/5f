@@ -7,7 +7,7 @@ import {
 import 'source-map-support';
 import { DynamoDB, ApiGatewayManagementApi } from 'aws-sdk';
 import { lastUpdated } from './util/lastUpdated';
-import { mask } from './domain/Finger';
+import { mask } from './domain/entities/Finger';
 
 interface APIGatewayProxyEventWithWebSocket extends APIGatewayProxyEvent {
   requestContext: APIGatewayEventRequestContextWithWebSocket
