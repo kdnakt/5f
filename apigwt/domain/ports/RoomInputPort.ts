@@ -12,6 +12,6 @@ export type JoinRoomCommand = {
 }
 
 export interface IRoomInputPort {
-    makeNewRoom(command: NewRoomCommand): Promise<void>
+    makeNewRoom(command: NewRoomCommand): Promise<boolean>
     joinRoom(command: JoinRoomCommand): Promise<FingerType>
 }
