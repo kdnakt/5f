@@ -1,4 +1,5 @@
 import { FingerType } from "../values/FingerType";
+import { IRoomOutputPort } from "./RoomOutputPort";
 
 export type NewRoomCommand = {
     fingerType: FingerType;
@@ -21,9 +22,9 @@ export interface IRoomInputPort {
 }
 
 export class RoomInputPort implements IRoomInputPort {
-    private roomOutputPort: IRoomInputPort;
+    private roomOutputPort: IRoomOutputPort;
 
-    constructor(roomOutputPort: IRoomInputPort) {
+    constructor(roomOutputPort: IRoomOutputPort) {
         this.roomOutputPort = roomOutputPort;
     }
 
