@@ -17,6 +17,12 @@ export interface IRoomInputPort {
 }
 
 export class RoomInputPort implements IRoomInputPort {
+    private roomOutputPort: IRoomInputPort;
+
+    constructor(roomOutputPort: IRoomInputPort) {
+        this.roomOutputPort = roomOutputPort;
+    }
+
     makeNewRoom(command: NewRoomCommand): Promise<boolean> {
         throw new Error("Method not implemented.");
     }
