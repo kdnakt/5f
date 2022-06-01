@@ -1,9 +1,13 @@
 import { FingerType } from "../values/FingerType";
 
 export type NewRoomCommand = {
+    fingerType: FingerType;
+}
+
+export type NewRoomResponse = {
+    success: boolean;
     roomId: string;
     sessionId: string;
-    fingerType: FingerType;
 }
 
 export type JoinRoomCommand = {
@@ -12,7 +16,7 @@ export type JoinRoomCommand = {
 }
 
 export interface IRoomInputPort {
-    makeNewRoom(command: NewRoomCommand): Promise<boolean>;
+    makeNewRoom(command: NewRoomCommand): Promise<NewRoomResponse>;
     joinRoom(command: JoinRoomCommand): Promise<FingerType>;
 }
 
@@ -23,7 +27,7 @@ export class RoomInputPort implements IRoomInputPort {
         this.roomOutputPort = roomOutputPort;
     }
 
-    makeNewRoom(command: NewRoomCommand): Promise<boolean> {
+    makeNewRoom(command: NewRoomCommand): Promise<NewRoomResponse> {
         throw new Error("Method not implemented.");
     }
     joinRoom(command: JoinRoomCommand): Promise<FingerType> {
