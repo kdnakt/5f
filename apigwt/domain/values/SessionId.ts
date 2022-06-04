@@ -1,3 +1,5 @@
+import { NUMBERS } from "./RoomId";
+
 const ALPHANUMS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" + NUMBERS;
 const ALPHANUMS_LEN = ALPHANUMS.length;
 
