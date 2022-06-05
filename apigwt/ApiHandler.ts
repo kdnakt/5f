@@ -5,10 +5,17 @@ import { DynamoDB } from 'aws-sdk';
 import { lastUpdated } from './util/lastUpdated';
 import { randomRoomId } from './domain/values/RoomId';
 import { randomSessionId } from './domain/values/SessionId';
+import { RoomInputPort } from './domain/ports/RoomInputPort';
+import { RoomOutputPort } from './domain/ports/RoomOutputPort';
+import { DdbRoomAdapter } from './domain/adapters/RoomAdapter';
 
 const db = new DynamoDB.DocumentClient();
 const roomTable = process.env.ROOMS_TABLENAME;
 const corsOrigin = process.env.CORS_ORIGIN;
+
+const roomAdapter = new DdbRoomAdapter(roomTable, db);
+const roomOutputPort = new RoomOutputPort(roomAdapter);
+const roomInputPort = new RoomInputPort(roomOutputPort);
 
 const exists = async (id: string) => {
   let res = false;
