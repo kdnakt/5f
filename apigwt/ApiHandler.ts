@@ -3,30 +3,12 @@ import 'source-map-support/register';
 
 import { DynamoDB } from 'aws-sdk';
 import { lastUpdated } from './util/lastUpdated';
+import { randomRoomId } from './domain/values/RoomId';
+import { randomSessionId } from './domain/values/SessionId';
 
 const db = new DynamoDB.DocumentClient();
 const roomTable = process.env.ROOMS_TABLENAME;
 const corsOrigin = process.env.CORS_ORIGIN;
-const NUMBERS = "0123456789";
-const ALPHANUMS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" + NUMBERS;
-const ALPHANUMS_LEN = ALPHANUMS.length;
-
-const randomRoomId = () => {
-  let res = "";
-  for (let i = 0; i < 6; i++) {
-    res += NUMBERS[Math.floor(Math.random()*10)]
-  }
-  return res;
-}
-
-const randomSessionId = () => {
-  let res = "";
-  for (let i = 0; i < 16; i++) {
-    res += ALPHANUMS[Math.floor(Math.random()*ALPHANUMS_LEN)]
-  }
-  console.log('newSessionId:', res);
-  return res;
-}
 
 const exists = async (id: string) => {
   let res = false;
