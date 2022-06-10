@@ -22,6 +22,18 @@ class DummyRoomAdapter implements IRoomAdapter {
   }
 }
 
+class ErrorRoomAdapter implements IRoomAdapter {
+  public async put(_: Room): Promise<boolean> {
+    return false;
+  }
+  public async get(roomId: string): Promise<Room> {
+    throw new Error(`no room found with id: ${roomId}`);
+  }
+  public async update(_: Room): Promise<boolean> {
+    return false;
+  }
+}
+
 describe('RoomOutputPort', () => {
   const sut = new RoomOutputPort(new DummyRoomAdapter());
   it('getRoomById', async () => {
@@ -50,4 +62,15 @@ describe('RoomOutputPort', () => {
     expect(result).toBe(true);
   });
 
+});
+
+describe('RoomOutputPort error test', () => {
+  const sut = new RoomOutputPort(new ErrorRoomAdapter());
+  it('getRoomById', async () => {
+    expect.assertions(1);
+    return sut.getRoom(id)
+        .catch(e => {
+            expect(e).toMatchObject(new Error('no room found with id: 999999'));
+        });
+  });
 });
