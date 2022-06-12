@@ -73,4 +73,22 @@ describe('RoomOutputPort error test', () => {
             expect(e).toMatchObject(new Error('no room found with id: 999999'));
         });
   });
+  it('create', async () => {
+    const room: Room = {
+        id: id,
+        fingerType: type,
+        sessionIds: [sessionId]
+    };
+    const result = await sut.create(room);
+    expect(result).toBe(false);
+  });
+  it('update',async () => {
+    const room: Room = {
+        id: id,
+        fingerType: type,
+        sessionIds: [sessionId]
+    };
+    const result = await sut.update(room);
+    expect(result).toBe(false);
+  })
 });
