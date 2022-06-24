@@ -1,5 +1,5 @@
 import { Room } from "../entities/Room";
-import { JoinRoomCommand, NewRoomCommand, RoomInputPort } from "./RoomInputPort";
+import { JoinRoomCommand, NewRoomCommand, RoomInfo, RoomInputPort } from "./RoomInputPort";
 import { IRoomOutputPort } from "./RoomOutputPort";
 
 const sessionIds = ["1234567890"];
@@ -37,8 +37,9 @@ describe('RoomInputPort', () => {
       roomId: '987654'
     };
     const res = await sut.joinRoom(command);
-    expect(res.success).toBe(true);
-    expect(res.fingerType).toBe('like');
-    expect(res.sessionId).toBeTruthy();
+    expect(res.statusCode).toBe(200);
+    const { fingerType, sessionId } = res.info as RoomInfo
+    expect(fingerType).toBe('like');
+    expect(sessionId).toBeTruthy();
   });
 });

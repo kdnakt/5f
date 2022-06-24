@@ -18,9 +18,17 @@ export type JoinRoomCommand = {
 }
 
 export type JoinRoomResponse = {
-  success: boolean;
+  statusCode: number;
+  info: RoomInfo | ErrorInfo;
+}
+
+export type RoomInfo = {
   sessionId: string;
   fingerType: FingerType | undefined;
+}
+
+export type ErrorInfo = {
+  error: string;
 }
 
 export interface IRoomInputPort {
@@ -54,11 +62,13 @@ export class RoomInputPort implements IRoomInputPort {
     const room = await this.roomOutputPort.getRoom(command.roomId);
     const sessionId = randomSessionId();
     room.sessionIds.push(sessionId);
-    const updated = await this.roomOutputPort.update(room);
+    await this.roomOutputPort.update(room);
     return {
-      success: updated,
-      sessionId,
-      fingerType: room.fingerType
+      statusCode: 200,
+      info: {
+        sessionId,
+        fingerType: room.fingerType
+      }
     };
   }
 }
