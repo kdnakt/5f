@@ -1,3 +1,4 @@
+import { Room } from "../entities/Room"
 import { FingerType } from "../values/FingerType";
 import { randomRoomId } from "../values/RoomId";
 import { randomSessionId } from "../values/SessionId";
@@ -50,6 +51,9 @@ export class RoomInputPort implements IRoomInputPort {
       id: roomId,
       fingerType: command.fingerType,
       sessionIds: [sessionId]
+    }).catch(e => {
+      console.log(e);
+      return false;
     });
     return {
       success: created,
@@ -59,10 +63,29 @@ export class RoomInputPort implements IRoomInputPort {
   }
 
   public async joinRoom(command: JoinRoomCommand): Promise<JoinRoomResponse> {
-    const room = await this.roomOutputPort.getRoom(command.roomId);
+    const room: Room = await this.roomOutputPort.getRoom(command.roomId)
+      .catch(e => {
+        console.log(e);
+        return undefined;
+      });
+    if (!room) {
+      return {
+        statusCode: 500,
+        info: {
+          error: `Room not found: ${command.roomId}`
+        }
+      };
+    }
     const sessionId = randomSessionId();
     room.sessionIds.push(sessionId);
-    await this.roomOutputPort.update(room);
+    await this.roomOutputPort.update(room).catch(e => {
+      return {
+        statusCode: 500,
+        info: {
+          error: e
+        }
+      }
+    });
     return {
       statusCode: 200,
       info: {

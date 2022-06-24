@@ -1,5 +1,5 @@
 import { Room } from "../entities/Room";
-import { JoinRoomCommand, NewRoomCommand, RoomInfo, RoomInputPort } from "./RoomInputPort";
+import { ErrorInfo, JoinRoomCommand, NewRoomCommand, RoomInfo, RoomInputPort } from "./RoomInputPort";
 import { IRoomOutputPort } from "./RoomOutputPort";
 
 const sessionIds = ["1234567890"];
@@ -17,6 +17,18 @@ class DummyRoomOutputPort implements IRoomOutputPort {
   }
   public async update(_: Room): Promise<boolean> {
     return true;
+  }
+}
+
+class ErrorRoomOutputPort implements IRoomOutputPort {
+  public async create(room: Room): Promise<boolean> {
+    throw new Error(`Failed to create a room: ${room.id}`);
+  }
+  public async getRoom(roomId: string): Promise<Room> {
+    throw new Error(`Failed to get a room: ${roomId}`);
+  }
+  public async update(room: Room): Promise<boolean> {
+    throw new Error(`Failed to update a room: ${room.id}`);
   }
 }
 
@@ -41,5 +53,28 @@ describe('RoomInputPort', () => {
     const { fingerType, sessionId } = res.info as RoomInfo
     expect(fingerType).toBe('like');
     expect(sessionId).toBeTruthy();
+  });
+});
+
+describe('RoomInputPort error handling', () => {
+  const sut = new RoomInputPort(new ErrorRoomOutputPort());
+  it('makeNewRoom', async () => {
+    const command: NewRoomCommand = {
+      fingerType: "like"
+    };
+    const res = await sut.makeNewRoom(command);
+    expect(res.success).toBe(false);
+    expect(res.roomId).toBeTruthy();
+    expect(res.sessionId).toBeTruthy();
+  });
+
+  it('joinRoom', async () => {
+    const command: JoinRoomCommand = {
+      roomId: '987654'
+    };
+    const res = await sut.joinRoom(command);
+    expect(res.statusCode).toBe(500);
+    const { error } = res.info as ErrorInfo
+    expect(error).toBe('Room not found: 987654');
   });
 });
