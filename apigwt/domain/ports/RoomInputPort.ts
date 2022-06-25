@@ -30,7 +30,7 @@ export type JoinRoomResponse = ResponseBase & {
 
 export type SessionInfo = {
   sessionId: string;
-  fingerType: FingerType | undefined;
+  type: FingerType | undefined;
 }
 
 export type ErrorInfo = {
@@ -53,6 +53,7 @@ export class RoomInputPort implements IRoomInputPort {
     const roomId = randomRoomId();
     const sessionId = randomSessionId();
     const fingerType = command.fingerType;
+    console.log(`SessionId=${sessionId} is trying to create a room=${roomId}/${fingerType}`);
     const created = await this.roomOutputPort.create({
       id: roomId,
       fingerType,
@@ -61,12 +62,13 @@ export class RoomInputPort implements IRoomInputPort {
       console.log(e);
       return false;
     });
+    console.log(`SessionId=${sessionId} create result: ${created}`);
     return {
       statusCode: created ? 200 : 500,
       info: created ? {
         roomId,
         sessionId,
-        fingerType
+        type: fingerType
       } : {
         error: "Create failed"
       }
@@ -74,11 +76,13 @@ export class RoomInputPort implements IRoomInputPort {
   }
 
   public async joinRoom(command: JoinRoomCommand): Promise<JoinRoomResponse> {
+    console.log(`Looking for a room=${command.roomId}`);
     const room: Room = await this.roomOutputPort.getRoom(command.roomId)
       .catch(e => {
         console.log(e);
         return undefined;
       });
+    console.log("Room found:", room);
     if (!room) {
       return {
         statusCode: 500,
@@ -89,15 +93,17 @@ export class RoomInputPort implements IRoomInputPort {
     }
     const sessionId = randomSessionId();
     room.sessionIds.push(sessionId);
+    console.log(`SessionId=${sessionId} is trying to join the room:`, room);
     const updated = await this.roomOutputPort.update(room).catch(e => {
       console.log(e);
       return false;
     });
+    console.log(`SessionId=${sessionId} join result: ${updated}`);
     return {
       statusCode: updated ? 200 : 500,
       info: updated ? {
         sessionId,
-        fingerType: room.fingerType
+        type: room.fingerType
       } : {
         error: 'Update failed'
       }

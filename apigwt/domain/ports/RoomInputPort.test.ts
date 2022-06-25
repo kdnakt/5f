@@ -56,10 +56,10 @@ describe('RoomInputPort', () => {
     };
     const res = await sut.makeNewRoom(command);
     expect(res.statusCode).toBe(200);
-    const { roomId, sessionId, fingerType } = res.info as RoomInfo;
+    const { roomId, sessionId, type } = res.info as RoomInfo;
     expect(roomId).toBeTruthy();
     expect(sessionId).toBeTruthy();
-    expect(fingerType).toBe('like');
+    expect(type).toBe('like');
   });
 
   it('joinRoom', async () => {
@@ -68,8 +68,8 @@ describe('RoomInputPort', () => {
     };
     const res = await sut.joinRoom(command);
     expect(res.statusCode).toBe(200);
-    const { fingerType, sessionId } = res.info as SessionInfo
-    expect(fingerType).toBe('like');
+    const { type, sessionId } = res.info as SessionInfo
+    expect(type).toBe('like');
     expect(sessionId).toBeTruthy();
   });
 });
