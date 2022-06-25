@@ -4,26 +4,31 @@ import { randomRoomId } from "../values/RoomId";
 import { randomSessionId } from "../values/SessionId";
 import { IRoomOutputPort } from "./RoomOutputPort";
 
+type ResponseBase = {
+  statusCode: number;
+}
+
 export type NewRoomCommand = {
   fingerType: FingerType;
 }
 
-export type NewRoomResponse = {
-  success: boolean;
-  roomId: string;
-  sessionId: string;
+export type NewRoomResponse = ResponseBase & {
+  info: RoomInfo | ErrorInfo
 }
+
+export type RoomInfo = {
+  roomId: string;
+} & SessionInfo
 
 export type JoinRoomCommand = {
   roomId: string;
 }
 
-export type JoinRoomResponse = {
-  statusCode: number;
-  info: RoomInfo | ErrorInfo;
+export type JoinRoomResponse = ResponseBase & {
+  info: SessionInfo | ErrorInfo;
 }
 
-export type RoomInfo = {
+export type SessionInfo = {
   sessionId: string;
   fingerType: FingerType | undefined;
 }
@@ -47,18 +52,24 @@ export class RoomInputPort implements IRoomInputPort {
   public async makeNewRoom(command: NewRoomCommand): Promise<NewRoomResponse> {
     const roomId = randomRoomId();
     const sessionId = randomSessionId();
+    const fingerType = command.fingerType;
     const created = await this.roomOutputPort.create({
       id: roomId,
-      fingerType: command.fingerType,
+      fingerType,
       sessionIds: [sessionId]
     }).catch(e => {
       console.log(e);
       return false;
     });
     return {
-      success: created,
-      roomId,
-      sessionId
+      statusCode: created ? 200 : 500,
+      info: created ? {
+        roomId,
+        sessionId,
+        fingerType
+      } : {
+        error: "Create failed"
+      }
     };
   }
 

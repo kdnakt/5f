@@ -1,5 +1,5 @@
 import { Room } from "../entities/Room";
-import { ErrorInfo, JoinRoomCommand, NewRoomCommand, RoomInfo, RoomInputPort } from "./RoomInputPort";
+import { ErrorInfo, JoinRoomCommand, NewRoomCommand, RoomInfo, RoomInputPort, SessionInfo } from "./RoomInputPort";
 import { IRoomOutputPort } from "./RoomOutputPort";
 
 const sessionIds = ["1234567890"];
@@ -55,9 +55,11 @@ describe('RoomInputPort', () => {
       fingerType: "like"
     };
     const res = await sut.makeNewRoom(command);
-    expect(res.success).toBe(true);
-    expect(res.roomId).toBeTruthy();
-    expect(res.sessionId).toBeTruthy();
+    expect(res.statusCode).toBe(200);
+    const { roomId, sessionId, fingerType } = res.info as RoomInfo;
+    expect(roomId).toBeTruthy();
+    expect(sessionId).toBeTruthy();
+    expect(fingerType).toBe('like');
   });
 
   it('joinRoom', async () => {
@@ -66,7 +68,7 @@ describe('RoomInputPort', () => {
     };
     const res = await sut.joinRoom(command);
     expect(res.statusCode).toBe(200);
-    const { fingerType, sessionId } = res.info as RoomInfo
+    const { fingerType, sessionId } = res.info as SessionInfo
     expect(fingerType).toBe('like');
     expect(sessionId).toBeTruthy();
   });
@@ -79,9 +81,9 @@ describe('RoomInputPort Create & Get error handling', () => {
       fingerType: "like"
     };
     const res = await sut.makeNewRoom(command);
-    expect(res.success).toBe(false);
-    expect(res.roomId).toBeTruthy();
-    expect(res.sessionId).toBeTruthy();
+    expect(res.statusCode).toBe(500);
+    const { error } = res.info as ErrorInfo
+    expect(error).toBe('Create failed');
   });
 
   it('joinRoom', async () => {
