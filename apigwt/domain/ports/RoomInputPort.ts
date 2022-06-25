@@ -78,19 +78,17 @@ export class RoomInputPort implements IRoomInputPort {
     }
     const sessionId = randomSessionId();
     room.sessionIds.push(sessionId);
-    await this.roomOutputPort.update(room).catch(e => {
-      return {
-        statusCode: 500,
-        info: {
-          error: e
-        }
-      }
+    const updated = await this.roomOutputPort.update(room).catch(e => {
+      console.log(e);
+      return false;
     });
     return {
-      statusCode: 200,
-      info: {
+      statusCode: updated ? 200 : 500,
+      info: updated ? {
         sessionId,
         fingerType: room.fingerType
+      } : {
+        error: 'Update failed'
       }
     };
   }
