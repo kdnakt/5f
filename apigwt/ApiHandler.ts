@@ -5,9 +5,10 @@ import { DynamoDB } from 'aws-sdk';
 import { lastUpdated } from './util/lastUpdated';
 import { randomRoomId } from './domain/values/RoomId';
 import { randomSessionId } from './domain/values/SessionId';
-import { RoomInputPort } from './domain/ports/RoomInputPort';
+import { JoinRoomCommand, NewRoomCommand, RoomInputPort } from './domain/ports/RoomInputPort';
 import { RoomOutputPort } from './domain/ports/RoomOutputPort';
 import { DdbRoomAdapter } from './domain/adapters/RoomAdapter';
+import { toFingerType } from './domain/values/FingerType';
 
 const db = new DynamoDB.DocumentClient();
 const roomTable = process.env.ROOMS_TABLENAME;
@@ -83,18 +84,17 @@ const addSession = async (roomId: string, sessionId: string, _context: Context) 
 export const newRoom: APIGatewayProxyHandler = async (event, _context) => {
   console.log('event:', event);
   const req = JSON.parse(event.body);
-  const sessionId = randomSessionId();
-  const [roomId, type] = await newRoomId(sessionId, req.type);
+  const type = toFingerType(req.type)
+  const command: NewRoomCommand = {
+    fingerType: type
+  };
+  const res = await roomInputPort.makeNewRoom(command);
   return {
-    statusCode: 200,
+    statusCode: res.statusCode,
     headers: {
       'Access-Control-Allow-Origin': corsOrigin
     },
-    body: JSON.stringify({
-      roomId: roomId,
-      type: type,
-      sessionId: sessionId,
-    })
+    body: JSON.stringify(res.info)
   };
 }
 
@@ -111,28 +111,15 @@ export const getRoom: APIGatewayProxyHandler = async (event, _context) => {
       body: 'Bad Request'
     };
   }
-  if (!exists(roomId)) {
-    console.log(`${roomId} doesn't exist`);
-    return {
-      statusCode: 400,
-      headers: {
-        'Access-Control-Allow-Origin': corsOrigin
-      },
-      body: `Bad Request`
-    }
+  const command: JoinRoomCommand = {
+    roomId
   }
-  const sessionId = randomSessionId();
-  const type = await addSession(roomId, sessionId, _context);
-  console.log(type)
+  const res = await roomInputPort.joinRoom(command);
   return {
-    statusCode: 200,
+    statusCode: res.statusCode,
     headers: {
       'Access-Control-Allow-Origin': corsOrigin
     },
-    body: JSON.stringify({
-      roomId: roomId,
-      type: type,
-      sessionId: sessionId,
-    })
+    body: JSON.stringify(res.info)
   };
 }
