@@ -85,7 +85,7 @@ export class RoomInputPort implements IRoomInputPort {
     console.log("Room found:", room);
     if (!room) {
       return {
-        statusCode: 500,
+        statusCode: 404,
         info: {
           error: `Room not found: ${command.roomId}`
         }

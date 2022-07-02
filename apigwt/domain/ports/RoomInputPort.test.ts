@@ -91,7 +91,7 @@ describe('RoomInputPort Create & Get error handling', () => {
       roomId: '987654'
     };
     const res = await sut.joinRoom(command);
-    expect(res.statusCode).toBe(500);
+    expect(res.statusCode).toBe(404);
     const { error } = res.info as ErrorInfo
     expect(error).toBe('Room not found: 987654');
   });
