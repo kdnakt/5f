@@ -86,7 +86,7 @@ describe('RoomInputPort Create & Get error handling', () => {
     expect(error).toBe('Create failed');
   });
 
-  it('joinRoom', async () => {
+  it('joinRoom: room not found', async () => {
     const command: JoinRoomCommand = {
       roomId: '987654'
     };
@@ -94,6 +94,16 @@ describe('RoomInputPort Create & Get error handling', () => {
     expect(res.statusCode).toBe(404);
     const { error } = res.info as ErrorInfo
     expect(error).toBe('Room not found: 987654');
+  });
+
+  it('joinRoom: bad request', async () => {
+    const command: JoinRoomCommand = {
+      roomId: undefined
+    };
+    const res = await sut.joinRoom(command);
+    expect(res.statusCode).toBe(400);
+    const { error } = res.info as ErrorInfo
+    expect(error).toBe('Bad Request');
   });
 });
 

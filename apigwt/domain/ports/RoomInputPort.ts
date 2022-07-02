@@ -77,6 +77,14 @@ export class RoomInputPort implements IRoomInputPort {
 
   public async joinRoom(command: JoinRoomCommand): Promise<JoinRoomResponse> {
     console.log(`Looking for a room=${command.roomId}`);
+    if (!command.roomId) {
+      return {
+        statusCode: 400,
+        info: {
+          error: "Bad Request"
+        }
+      }
+    }
     const room: Room = await this.roomOutputPort.getRoom(command.roomId)
       .catch(e => {
         console.log(e);
