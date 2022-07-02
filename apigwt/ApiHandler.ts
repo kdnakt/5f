@@ -35,16 +35,6 @@ export const newRoom: APIGatewayProxyHandler = async (event, _context) => {
 export const getRoom: APIGatewayProxyHandler = async (event, _context) => {
   console.log('event:', event);
   const roomId = event.queryStringParameters.id;
-  if (!roomId) {
-    console.log('id parameter is not specified');
-    return {
-      statusCode: 400,
-      headers: {
-        'Access-Control-Allow-Origin': corsOrigin
-      },
-      body: 'Bad Request'
-    };
-  }
   const command: JoinRoomCommand = {
     roomId
   }
