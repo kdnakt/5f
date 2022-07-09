@@ -59,7 +59,7 @@ functions:
     events:
       - websocket:
           route: $connect
-  onDisonnect:
+  onDisconnect:
     handler: SocketHandler.onDisconnect
     events:
       - websocket:
