@@ -12,7 +12,7 @@ export type NewRoomCommand = {
   fingerType: FingerType;
 }
 
-export type NewRoomResponse = ResponseBase & {
+type NewRoomResponse = ResponseBase & {
   info: RoomInfo | ErrorInfo
 }
 
@@ -24,7 +24,7 @@ export type JoinRoomCommand = {
   roomId: string;
 }
 
-export type JoinRoomResponse = ResponseBase & {
+type JoinRoomResponse = ResponseBase & {
   info: SessionInfo | ErrorInfo;
 }
 
