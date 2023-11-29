@@ -29,6 +29,7 @@ type JoinRoomResponse = ResponseBase & {
 }
 
 export type SessionInfo = {
+  roomId: string;
   sessionId: string;
   type: FingerType | undefined;
 }
@@ -110,6 +111,7 @@ export class RoomInputPort implements IRoomInputPort {
     return {
       statusCode: updated ? 200 : 500,
       info: updated ? {
+        roomId: room.id,
         sessionId,
         type: room.fingerType
       } : {

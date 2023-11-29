@@ -42,9 +42,9 @@ export class DdbRoomAdapter implements IRoomAdapter {
         },
         ProjectionExpression: 'SessionIds, LastUpdated, FingerType',
     }).promise();
-    if (!item.Item) {
+    if (item.Item) {
       return {
-        id: item.Item.RoomId,
+        id: roomId,
         fingerType: item.Item.FingerType,
         sessionIds: item.Item.SessionIds
       };
@@ -58,7 +58,7 @@ export class DdbRoomAdapter implements IRoomAdapter {
         Key: {
             RoomId: room.id,
         },
-        UpdateExpression: 'SessionIds = :sids, LastUpdated = :lu',
+        UpdateExpression: 'SET SessionIds = :sids, LastUpdated = :lu',
         ExpressionAttributeValues: {
           ':sids': room.sessionIds,
           ':lu': lastUpdated(),
